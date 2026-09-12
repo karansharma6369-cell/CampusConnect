@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+   content="width=device-width, initial-scale=1.0">
+
+<title>Chat - CampusConnect</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+/* =================================
+   Attachment Bar
+================================= */
+
+.message-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attachment-label {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f1f3f5;
+
+    cursor: pointer;
+
+    font-size: 22px;
+
+    transition: 0.2s;
+}
+
+.attachment-label:hover {
+    background: #e2e6ea;
+    transform: scale(1.05);
+}
+
+#fileInput {
+    display: none;
+}
+
+.selected-file {
+    display: none;
+
+    padding: 8px 12px;
+
+    margin-bottom: 8px;
+
+    background: #f5f7fb;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    color: #444;
+}
+
+.selected-file.show {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.remove-file {
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    color: #777;
+}
+
+
+/* =================================
+   Attachment Messages
+================================= */
+
+.attachment-message {
+    max-width: 280px;
+}
+
+.attachment-image {
+    display: block;
+
+    max-width: 260px;
+    max-height: 300px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    object-fit: cover;
+}
+
+.attachment-video {
+    width: 260px;
+
+    max-height: 300px;
+
+    border-radius: 12px;
+}
+
+.attachment-audio {
+    width: 260px;
+}
+
+.file-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    background: rgba(255,255,255,0.7);
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    min-width: 200px;
+}
+
+.file-icon {
+    font-size: 28px;
+}
+
+.file-info {
+    overflow: hidden;
+}
+
+.file-name {
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.file-label {
+    font-size: 12px;
+
+    color: #777;
+}
+
+
+/* =================================
+   Upload Progress
+================================= */
+
+.upload-status {
+    display: none;
+
+    font-size: 13px;
+
+    color: #666;
+
+    margin-bottom: 6px;
+}
+
+.upload-status.show {
+    display: block;
+}
+
+
+/* =================================
+   Message Wrapper
+================================= */
+
+.message-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Mere messages → RIGHT */
+.my-wrapper {
+    justify-content: flex-end;
+}
+
+/* Dusre user ke messages → LEFT */
+.other-wrapper {
+    justify-content: flex-start;
+}
+
+
+/* =================================
+   Delete Message Button
+================================= */
+
+.delete-message-btn {
+
+    position: absolute;
+
+    top: 7px;
+
+    right: 7px;
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.18);
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    opacity: 1;
+
+    transition: 0.2s ease;
+
+    z-index: 20;
+}
+
+
+/* Only own messages show delete button */
+
+.other-wrapper .delete-message-btn {
+    display: none;
+}
+
+
+/* Hover */
+
+.delete-message-btn:hover {
+
+    background: #fff1f2;
+
+    transform: scale(1.08);
+
+    box-shadow:
+        0 5px 14px rgba(0,0,0,0.22);
+}
+
+
+/* Give own message space for dustbin */
+
+.my-message {
+
+    position: relative;
+
+    padding-right: 44px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .delete-message-btn {
+
+        width: 28px;
+        height: 28px;
+
+        top: 5px;
+        right: 5px;
+
+        font-size: 14px;
+    }
+
+    .my-message {
+
+        padding-right: 40px;
+    }
+
+}
+
+
+/* =================================
+   Scroll To Bottom Area
+================================= */
+
+.scroll-button-area {
+
+    width: 100%;
+
+    height: 0;
+
+    position: relative;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 1000;
+}
+
+
+/* =================================
+   Scroll To Bottom Button
+================================= */
+
+#scrollToBottom {
+
+    position: absolute;
+
+    bottom: 10px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: white;
+
+    color: #4f46e5;
+
+    font-size: 23px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.20);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 1000;
+
+    transition: 0.2s ease;
+}
+
+
+#scrollToBottom:hover {
+
+    transform:
+        translateX(-50%)
+        scale(1.08);
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.25);
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    #scrollToBottom {
+
+        width: 40px;
+        height: 40px;
+
+        font-size: 21px;
+
+        bottom: 8px;
+    }
+
+}
+
+
+/* =================================
+   Delete Confirmation
+================================= */
+
+.delete-confirm-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,0.35);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 2000;
+}
+
+.delete-confirm-box {
+
+    width: min(90%, 330px);
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.25);
+
+    text-align: center;
+}
+
+.delete-confirm-box h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 8px;
+}
+
+.delete-confirm-box p {
+
+    color: #666;
+
+    font-size: 14px;
+
+    margin-bottom: 20px;
+}
+
+.delete-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    justify-content: center;
+}
+
+.delete-cancel,
+.delete-confirm {
+
+    border: none;
+
+    padding: 10px 18px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.delete-cancel {
+
+    background: #f1f3f5;
+
+    color: #444;
+}
+
+.delete-confirm {
+
+    background: #dc2626;
+
+    color: white;
+}
+
+.delete-confirm:hover {
+
+    background: #b91c1c;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+<!-- =================================
+     Chat Header
+================================= -->
+
+<div class="chat-header">
+
+
+<a href="{{ url_for('dashboard') }}">
+    ← Back
+</a>
+
+<h2>{{ other_user.name }}</h2>
+
+<p id="userStatus">
+    ⚫ Offline
+</p>
+
+<p id="typingStatus"></p>
+
+
+</div>
+
+<!-- =================================
+     Messages
+================================= -->
+
+<div class="messages"
+     id="messages">
+
+{% for message in messages %}
+
+    <div class="message-wrapper
+                {% if message.sender_id == current_user.id %}
+                    my-wrapper
+                {% else %}
+                    other-wrapper
+                {% endif %}">
+
+
+        {% if message.sender_id == current_user.id %}
+
+
+            <div class="message my-message"
+                 data-message-id="{{ message.id }}">
+
+
+                {% if message.message_type == "image" %}
+
+                    <div class="attachment-message">
+
+                        <img
+                            src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                            class="attachment-image"
+                            alt="{{ message.file_name }}"
+                        >
+
+                    </div>
+
+
+                {% elif message.message_type == "video" %}
+
+                    <div class="attachment-message">
+
+                        <video
+                            class="attachment-video"
+                            controls
+                        >
+
+                            <source
+                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                            >
+
+                            Your browser does not support video.
+
+                        </video>
+
+                    </div>
+
+
+                {% elif message.message_type == "audio" %}
+
+                    <div class="attachment-message">
+
+                        <audio
+                            class="attachment-audio"
+                            controls
+                        >
+
+                            <source
+                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                            >
+
+                            Your browser does not support audio.
+
+                        </audio>
+
+                    </div>
+
+
+                {% elif message.message_type == "file" %}
+
+                    <a
+                        href="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                        class="file-card"
+                        target="_blank"
+                    >
+
+                        <span class="file-icon">
+                            📄
+                        </span>
+
+                        <span class="file-info">
+
+                            <span class="file-name">
+                                {{ message.file_name }}
+                            </span>
+
+                            <span class="file-label">
+                                Open file
+                            </span>
+
+                        </span>
+
+                    </a>
+
+
+                {% else %}
+
+                    <p>
+                        {{ message.body }}
+                    </p>
+
+                {% endif %}
+
+
+                <small>
+
+                    {{ message.created_at.strftime('%I:%M %p') }}
+
+                    <span class="read-status">
+
+                        {% if message.is_read %}
+                            ✓✓
+                        {% else %}
+                            ✓
+                        {% endif %}
+
+                    </span>
+
+                </small>
+
+
+                <!-- Delete button INSIDE own message -->
+
+                <button
+                    type="button"
+                    class="delete-message-btn"
+                    data-message-id="{{ message.id }}"
+                    title="Delete message"
+                >
+                    🗑️
+                </button>
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="message other-message"
+                 data-message-id="{{ message.id }}">
+
+
+                {% if message.message_type == "image" %}
+
+                    <div class="attachment-message">
+
+                        <img
+                            src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                            class="attachment-image"
+                            alt="{{ message.file_name }}"
+                        >
+
+                    </div>
+
+
+                {% elif message.message_type == "video" %}
+
+                    <div class="attachment-message">
+
+                        <video
+                            class="attachment-video"
+                            controls
+                        >
+
+                            <source
+                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                            >
+
+                            Your browser does not support video.
+
+                        </video>
+
+                    </div>
+
+
+                {% elif message.message_type == "audio" %}
+
+                    <div class="attachment-message">
+
+                        <audio
+                            class="attachment-audio"
+                            controls
+                        >
+
+                            <source
+                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                            >
+
+                            Your browser does not support audio.
+
+                        </audio>
+
+                    </div>
+
+
+                {% elif message.message_type == "file" %}
+
+                    <a
+                        href="{{ url_for('uploaded_file', filename=message.file_path) }}"
+                        class="file-card"
+                        target="_blank"
+                    >
+
+                        <span class="file-icon">
+                            📄
+                        </span>
+
+                        <span class="file-info">
+
+                            <span class="file-name">
+                                {{ message.file_name }}
+                            </span>
+
+                            <span class="file-label">
+                                Open file
+                            </span>
+
+                        </span>
+
+                    </a>
+
+
+                {% else %}
+
+                    <p>
+                        {{ message.body }}
+                    </p>
+
+                {% endif %}
+
+
+                <small>
+
+                    {{ message.created_at.strftime('%I:%M %p') }}
+
+                </small>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+{% endfor %}
+
+
+</div>
+
+<!-- =================================
+     Scroll Button
+================================= -->
+
+<div class="scroll-button-area">
+
+
+<button
+    type="button"
+    id="scrollToBottom"
+    title="Go to latest message"
+>
+    ↓
+</button>
+
+
+</div>
+
+<!-- =================================
+     Selected File
+================================= -->
+
+<div id="selectedFile"
+     class="selected-file">
+
+
+<span id="selectedFileName"></span>
+
+<button
+    type="button"
+    class="remove-file"
+    id="removeFile"
+>
+    ✕
+</button>
+
+
+</div>
+
+<!-- =================================
+     Upload Status
+================================= -->
+
+<div id="uploadStatus"
+     class="upload-status">
+
+
+Uploading...
+
+
+</div>
+
+<!-- =================================
+     Message Form
+================================= -->
+
+<form id="messageForm"
+      class="message-form">
+
+
+<!-- Attachment -->
+
+<label
+    for="fileInput"
+    class="attachment-label"
+    title="Attach file"
+>
+    📎
+</label>
+
+
+<input
+    type="file"
+    id="fileInput"
+    accept="
+        image/*,
+        video/*,
+        audio/*,
+        .pdf,
+        .doc,
+        .docx,
+        .txt,
+        .ppt,
+        .pptx,
+        .xls,
+        .xlsx,
+        .csv
+    "
+>
+
+
+<!-- Message Input -->
+
+<input
+    type="text"
+    id="messageInput"
+    placeholder="Type a message..."
+    autocomplete="off"
+>
+
+
+<!-- Send -->
+
+<button type="submit">
+    Send
+</button>
+
+
+</form>
+
+</div>
+
+<!-- =================================
+     Delete Confirmation Popup
+================================= -->
+
+<div id="deleteConfirmOverlay"
+     class="delete-confirm-overlay">
+
+
+<div class="delete-confirm-box">
+
+    <h3>
+        Delete message?
+    </h3>
+
+    <p>
+        Are you sure you want to delete this message?
+    </p>
+
+    <div class="delete-actions">
+
+        <button
+            type="button"
+            class="delete-cancel"
+            id="deleteCancel"
+        >
+            Cancel
+        </button>
+
+        <button
+            type="button"
+            class="delete-confirm"
+            id="deleteConfirm"
+        >
+            Delete
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- =================================
+     Local Socket.IO
+================================= -->
+
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+
+<script>
+
+
+// =================================
+// Socket Connection
+// =================================
+
+const socket = io();
+
+
+// =================================
+// IDs
+// =================================
+
+const conversationId =
+    Number("{{ conversation.id }}");
+
+const currentUserId =
+    Number("{{ current_user.id }}");
+
+const otherUserId =
+    Number("{{ other_user.id }}");
+
+
+// =================================
+// HTML Elements
+// =================================
+
+const messagesContainer =
+    document.getElementById("messages");
+
+const messageForm =
+    document.getElementById("messageForm");
+
+const messageInput =
+    document.getElementById("messageInput");
+
+const userStatus =
+    document.getElementById("userStatus");
+
+const typingStatus =
+    document.getElementById("typingStatus");
+
+const fileInput =
+    document.getElementById("fileInput");
+
+const selectedFile =
+    document.getElementById("selectedFile");
+
+const selectedFileName =
+    document.getElementById("selectedFileName");
+
+const removeFile =
+    document.getElementById("removeFile");
+
+const uploadStatus =
+    document.getElementById("uploadStatus");
+
+const scrollToBottomButton =
+    document.getElementById("scrollToBottom");
+
+
+// =================================
+// Delete Elements
+// =================================
+
+const deleteConfirmOverlay =
+    document.getElementById("deleteConfirmOverlay");
+
+const deleteCancel =
+    document.getElementById("deleteCancel");
+
+const deleteConfirm =
+    document.getElementById("deleteConfirm");
+
+let messageToDelete = null;
+
+
+// =================================
+// Typing Timer
+// =================================
+
+let typingTimer;
+
+
+// =================================
+// Join Conversation
+// =================================
+
+socket.emit("join", {
+
+    conversation_id:
+        conversationId
+
+});
+
+
+// =================================
+// Join Personal Notification Room
+// =================================
+
+socket.emit("join_user_room");
+
+
+// =================================
+// Mark Messages As Read
+// =================================
+
+function markMessagesAsRead() {
+
+    socket.emit("mark_as_read", {
+
+        conversation_id:
+            conversationId
+
+    });
+
+}
+
+markMessagesAsRead();
+
+
+// =================================
+// File Selected
+// =================================
+
+fileInput.addEventListener(
+    "change",
+    function() {
+
+        const file =
+            fileInput.files[0];
+
+        if (!file) {
+
+            selectedFile.classList.remove("show");
+
+            return;
+
+        }
+
+        selectedFileName.textContent =
+            "📎 " + file.name;
+
+        selectedFile.classList.add("show");
+
+    }
+);
+
+
+// =================================
+// Remove Selected File
+// =================================
+
+removeFile.addEventListener(
+    "click",
+    function() {
+
+        fileInput.value = "";
+
+        selectedFile.classList.remove("show");
+
+    }
+);
+
+
+// =================================
+// Online / Offline Status
+// =================================
+
+socket.on(
+    "user_status",
+    function(data) {
+
+        if (
+            data.user_id ===
+            otherUserId
+        ) {
+
+            if (
+                data.status ===
+                "online"
+            ) {
+
+                userStatus.textContent =
+                    "🟢 Online";
+
+            } else {
+
+                userStatus.textContent =
+                    "⚫ Offline";
+
+            }
+
+        }
+
+    }
+);
+
+
+// =================================
+// Typing Detection
+// =================================
+
+messageInput.addEventListener(
+    "input",
+    function() {
+
+        socket.emit(
+            "typing",
+            {
+                conversation_id:
+                    conversationId
+            }
+        );
+
+        clearTimeout(
+            typingTimer
+        );
+
+        typingTimer = setTimeout(
+            function() {
+
+                socket.emit(
+                    "stop_typing",
+                    {
+                        conversation_id:
+                            conversationId
+                    }
+                );
+
+            },
+            1000
+        );
+
+    }
+);
+
+
+// =================================
+// Someone Is Typing
+// =================================
+
+socket.on(
+    "user_typing",
+    function(data) {
+
+        if (
+            data.user_id ===
+            otherUserId
+        ) {
+
+            typingStatus.textContent =
+                "{{ other_user.name }} is typing...";
+
+        }
+
+    }
+);
+
+
+// =================================
+// Someone Stopped Typing
+// =================================
+
+socket.on(
+    "user_stopped_typing",
+    function(data) {
+
+        if (
+            data.user_id ===
+            otherUserId
+        ) {
+
+            typingStatus.textContent =
+                "";
+
+        }
+
+    }
+);
+
+
+// =================================
+// Send Message
+// =================================
+
+messageForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const message =
+            messageInput.value.trim();
+
+
+        // =================================
+        // File Upload
+        // =================================
+
+        if (fileInput.files.length > 0) {
+
+            const file =
+                fileInput.files[0];
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                "file",
+                file
+            );
+
+            formData.append(
+                "conversation_id",
+                conversationId
+            );
+
+            uploadStatus.textContent =
+                "Uploading " +
+                file.name +
+                "...";
+
+            uploadStatus.classList.add(
+                "show"
+            );
+
+            try {
+
+                const response =
+                    await fetch(
+                        "{{ url_for('upload_file') }}",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+                const result =
+                    await response.json();
+
+                if (!response.ok) {
+
+                    alert(
+                        result.error ||
+                        "File upload failed."
+                    );
+
+                    uploadStatus.classList.remove(
+                        "show"
+                    );
+
+                    return;
+
+                }
+
+                fileInput.value = "";
+
+                selectedFile.classList.remove(
+                    "show"
+                );
+
+                uploadStatus.textContent =
+                    "File sent successfully!";
+
+                setTimeout(
+                    function() {
+
+                        uploadStatus.classList.remove(
+                            "show"
+                        );
+
+                    },
+                    1500
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                uploadStatus.classList.remove(
+                    "show"
+                );
+
+                alert(
+                    "Something went wrong while uploading."
+                );
+
+            }
+
+            return;
+
+        }
+
+
+        // =================================
+        // Normal Text
+        // =================================
+
+        if (!message) {
+
+            return;
+
+        }
+
+        socket.emit(
+            "send_message",
+            {
+
+                conversation_id:
+                    conversationId,
+
+                message:
+                    message
+
+            }
+        );
+
+        messageInput.value = "";
+
+        messageInput.focus();
+
+        clearTimeout(
+            typingTimer
+        );
+
+        socket.emit(
+            "stop_typing",
+            {
+
+                conversation_id:
+                    conversationId
+
+            }
+        );
+
+    }
+);
+
+
+// =================================
+// Receive Message
+// =================================
+
+socket.on(
+    "receive_message",
+    function(data) {
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.classList.add(
+            "message-wrapper"
+        );
+
+
+        const messageDiv =
+            document.createElement("div");
+
+        messageDiv.classList.add(
+            "message"
+        );
+
+        messageDiv.dataset.messageId =
+            data.message_id;
+
+
+        // =================================
+        // Sender
+        // =================================
+
+        if (
+            data.sender_id ===
+            currentUserId
+        ) {
+
+            messageDiv.classList.add(
+                "my-message"
+            );
+
+            wrapper.classList.add(
+                "my-wrapper"
+            );
+
+        } else {
+
+            messageDiv.classList.add(
+                "other-message"
+            );
+
+            wrapper.classList.add(
+                "other-wrapper"
+            );
+
+        }
+
+
+        // =================================
+        // Text
+        // =================================
+
+        if (
+            data.message_type ===
+            "text"
+        ) {
+
+            const paragraph =
+                document.createElement("p");
+
+            paragraph.textContent =
+                data.message;
+
+            messageDiv.appendChild(
+                paragraph
+            );
+
+        }
+
+
+        // =================================
+        // Image
+        // =================================
+
+        else if (
+            data.message_type ===
+            "image"
+        ) {
+
+            const image =
+                document.createElement("img");
+
+            image.src =
+                data.file_url;
+
+            image.alt =
+                data.file_name;
+
+            image.classList.add(
+                "attachment-image"
+            );
+
+            messageDiv.appendChild(
+                image
+            );
+
+        }
+
+
+        // =================================
+        // Video
+        // =================================
+
+        else if (
+            data.message_type ===
+            "video"
+        ) {
+
+            const video =
+                document.createElement("video");
+
+            video.src =
+                data.file_url;
+
+            video.controls =
+                true;
+
+            video.classList.add(
+                "attachment-video"
+            );
+
+            messageDiv.appendChild(
+                video
+            );
+
+        }
+
+
+        // =================================
+        // Audio
+        // =================================
+
+        else if (
+            data.message_type ===
+            "audio"
+        ) {
+
+            const audio =
+                document.createElement("audio");
+
+            audio.src =
+                data.file_url;
+
+            audio.controls =
+                true;
+
+            audio.classList.add(
+                "attachment-audio"
+            );
+
+            messageDiv.appendChild(
+                audio
+            );
+
+        }
+
+
+        // =================================
+        // File
+        // =================================
+
+        else if (
+            data.message_type ===
+            "file"
+        ) {
+
+            const link =
+                document.createElement("a");
+
+            link.href =
+                data.file_url;
+
+            link.target =
+                "_blank";
+
+            link.classList.add(
+                "file-card"
+            );
+
+
+            const icon =
+                document.createElement("span");
+
+            icon.classList.add(
+                "file-icon"
+            );
+
+            icon.textContent =
+                "📄";
+
+
+            const info =
+                document.createElement("span");
+
+            info.classList.add(
+                "file-info"
+            );
+
+
+            const name =
+                document.createElement("span");
+
+            name.classList.add(
+                "file-name"
+            );
+
+            name.textContent =
+                data.file_name;
+
+
+            const label =
+                document.createElement("span");
+
+            label.classList.add(
+                "file-label"
+            );
+
+            label.textContent =
+                "Open file";
+
+
+            info.appendChild(name);
+
+            info.appendChild(label);
+
+            link.appendChild(icon);
+
+            link.appendChild(info);
+
+            messageDiv.appendChild(link);
+
+        }
+
+
+        // =================================
+        // Time
+        // =================================
+
+        const small =
+            document.createElement("small");
+
+        small.textContent =
+            data.time;
+
+
+        // =================================
+        // Read Status
+        // =================================
+
+        if (
+            data.sender_id ===
+            currentUserId
+        ) {
+
+            const readStatus =
+                document.createElement("span");
+
+            readStatus.classList.add(
+                "read-status"
+            );
+
+            readStatus.textContent =
+                " ✓";
+
+            small.appendChild(
+                readStatus
+            );
+
+        }
+
+        messageDiv.appendChild(
+            small
+        );
+
+
+        // =================================
+        // Add Delete Button INSIDE Bubble
+        // =================================
+
+        if (
+            data.sender_id ===
+            currentUserId
+        ) {
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.type =
+                "button";
+
+            deleteButton.classList.add(
+                "delete-message-btn"
+            );
+
+            deleteButton.dataset.messageId =
+                data.message_id;
+
+            deleteButton.title =
+                "Delete message";
+
+            deleteButton.textContent =
+                "🗑️";
+
+            messageDiv.appendChild(
+                deleteButton
+            );
+
+        }
+
+
+        // =================================
+        // Add Message
+        // =================================
+
+        wrapper.appendChild(
+            messageDiv
+        );
+
+        messagesContainer.appendChild(
+            wrapper
+        );
+
+
+        // =================================
+        // Scroll To Latest
+        // =================================
+
+        messagesContainer.scrollTop =
+            messagesContainer.scrollHeight;
+
+
+        // =================================
+        // Incoming Read
+        // =================================
+
+        if (
+            data.sender_id ===
+            otherUserId
+        ) {
+
+            markMessagesAsRead();
+
+            typingStatus.textContent =
+                "";
+
+        }
+
+    }
+);
+
+
+// =================================
+// Messages Read
+// =================================
+
+socket.on(
+    "messages_read",
+    function(data) {
+
+        const myMessages =
+            document.querySelectorAll(
+                ".my-message"
+            );
+
+        myMessages.forEach(
+            function(messageElement) {
+
+                const readStatus =
+                    messageElement.querySelector(
+                        ".read-status"
+                    );
+
+                if (readStatus) {
+
+                    readStatus.textContent =
+                        "✓✓";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+// =================================
+// Scroll To Bottom
+// =================================
+
+function scrollToBottom() {
+
+    messagesContainer.scrollTo({
+
+        top:
+            messagesContainer.scrollHeight,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+// =================================
+// Scroll Button Click
+// =================================
+
+scrollToBottomButton.addEventListener(
+    "click",
+    function() {
+
+        scrollToBottom();
+
+    }
+);
+
+
+// =================================
+// Show / Hide Scroll Button
+// =================================
+
+messagesContainer.addEventListener(
+    "scroll",
+    function() {
+
+        const distanceFromBottom =
+
+            messagesContainer.scrollHeight
+            -
+            messagesContainer.scrollTop
+            -
+            messagesContainer.clientHeight;
+
+
+        if (
+            distanceFromBottom > 250
+        ) {
+
+            scrollToBottomButton.style.display =
+                "flex";
+
+        } else {
+
+            scrollToBottomButton.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+// =================================
+// Delete Button Click
+// =================================
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const deleteButton =
+            event.target.closest(
+                ".delete-message-btn"
+            );
+
+
+        if (!deleteButton) {
+
+            return;
+
+        }
+
+
+        messageToDelete =
+            Number(
+                deleteButton.dataset.messageId
+            );
+
+
+        deleteConfirmOverlay.style.display =
+            "flex";
+
+    }
+);
+
+
+// =================================
+// Cancel Delete
+// =================================
+
+deleteCancel.addEventListener(
+    "click",
+    function() {
+
+        messageToDelete =
+            null;
+
+        deleteConfirmOverlay.style.display =
+            "none";
+
+    }
+);
+
+
+// =================================
+// Confirm Delete
+// =================================
+
+deleteConfirm.addEventListener(
+    "click",
+    function() {
+
+        if (!messageToDelete) {
+
+            return;
+
+        }
+
+
+        socket.emit(
+            "delete_message",
+            {
+
+                message_id:
+                    messageToDelete,
+
+                conversation_id:
+                    conversationId
+
+            }
+        );
+
+
+        messageToDelete =
+            null;
+
+        deleteConfirmOverlay.style.display =
+            "none";
+
+    }
+);
+
+
+// =================================
+// Message Deleted
+// =================================
+
+socket.on(
+    "message_deleted",
+    function(data) {
+
+        const messageElement =
+            document.querySelector(
+                `.message[data-message-id="${data.message_id}"]`
+            );
+
+
+        if (!messageElement) {
+
+            return;
+
+        }
+
+
+        const wrapper =
+            messageElement.closest(
+                ".message-wrapper"
+            );
+
+
+        if (wrapper) {
+
+            wrapper.remove();
+
+        }
+
+    }
+);
+
+
+// =================================
+// Initial Scroll
+// =================================
+
+messagesContainer.scrollTop =
+    messagesContainer.scrollHeight;
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CampusConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* =========================================
+           SECTION TITLE
+           ========================================= */
+
+        .section-title {
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================================
+           NOTIFICATION COUNT
+           ========================================= */
+
+        .notification-count {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-width: 28px;
+            height: 23px;
+
+            padding: 0 9px;
+            margin-left: 8px;
+
+            background: #eef2ff;
+            color: #4f46e5;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           RECENT CHAT
+           ========================================= */
+
+        .recent-chat-card {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 16px;
+
+            margin-bottom: 12px;
+
+            background: white;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .recent-info {
+            flex: 1;
+        }
+
+
+        .recent-info h3 {
+            margin: 0 0 5px 0;
+        }
+
+
+        .last-message {
+
+            margin: 0;
+
+            color: #666;
+
+            font-size: 14px;
+        }
+
+
+        .chat-time {
+
+            font-size: 12px;
+
+            color: #888;
+
+            margin-top: 5px;
+        }
+
+
+        .chat-button {
+            text-decoration: none;
+        }
+
+
+        .chat-button button {
+            cursor: pointer;
+        }
+
+
+        .no-chats {
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            color: #777;
+
+            text-align: center;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.06);
+        }
+
+
+        /* =========================================
+           USER CARD
+           ========================================= */
+
+        .user-card {
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        /* =========================================
+           UNREAD CHAT BADGE
+           ========================================= */
+
+        .chat-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .unread-badge {
+
+            min-width: 24px;
+            height: 24px;
+
+            padding: 0 7px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #eef2ff;
+
+            color: #4f46e5;
+
+            border-radius: 50px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            box-sizing: border-box;
+        }
+
+
+        /* =========================================
+           REAL-TIME NOTIFICATION TOAST
+           ========================================= */
+
+        .notification-toast {
+
+            position: fixed;
+
+            top: 20px;
+            right: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 280px;
+            max-width: 350px;
+
+            padding: 14px 18px;
+
+            background: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.15);
+
+            transform: translateY(-20px);
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+
+            z-index: 9999;
+        }
+
+
+        .notification-toast.show {
+
+            transform: translateY(0);
+
+            opacity: 1;
+
+            pointer-events: auto;
+        }
+
+
+        .notification-toast:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 35px rgba(0, 0, 0, 0.20);
+        }
+
+
+        .toast-icon {
+            font-size: 25px;
+        }
+
+
+        .toast-content {
+            flex: 1;
+        }
+
+
+        .toast-content strong {
+
+            display: block;
+
+            font-size: 14px;
+
+            color: #222;
+        }
+
+
+        .toast-content p {
+
+            margin: 3px 0 0;
+
+            font-size: 13px;
+
+            color: #666;
+        }
+
+
+        .toast-hint {
+
+            margin-top: 5px !important;
+
+            font-size: 11px !important;
+
+            color: #4f46e5 !important;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================
+           MOBILE TOAST
+           ========================================= */
+
+        @media (max-width: 600px) {
+
+            .notification-toast {
+
+                top: 15px;
+
+                left: 15px;
+
+                right: 15px;
+
+                min-width: auto;
+
+                max-width: none;
+
+                padding: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ========================================= -->
+    <!-- NAVBAR -->
+    <!-- ========================================= -->
+
+    <div class="navbar">
+
+        <h2>
+            CampusConnect 🎓
+        </h2>
+
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- MAIN CONTAINER -->
+    <!-- ========================================= -->
+
+    <div class="container">
+
+
+        <h1>
+            Hello, {{ user.name }} 👋
+        </h1>
+
+
+        <p>
+            Find students and start a conversation.
+        </p>
+
+
+        <!-- ===================================== -->
+        <!-- SEARCH -->
+        <!-- ===================================== -->
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search students or chats..."
+        >
+
+
+        <!-- ===================================== -->
+        <!-- NOTIFICATIONS -->
+        <!-- ===================================== -->
+
+        <h2 class="section-title">
+
+            🔔 Notifications
+
+
+            {% if unread_notifications > 0 %}
+
+                <span
+                    class="notification-count"
+                    id="notificationCount"
+                >
+                    {{ unread_notifications }} new
+                </span>
+
+            {% else %}
+
+                <span
+                    class="notification-count"
+                    id="notificationCount"
+                    style="display: none;"
+                >
+                    0 new
+                </span>
+
+            {% endif %}
+
+        </h2>
+
+
+        <!-- ===================================== -->
+        <!-- RECENT CHATS -->
+        <!-- ===================================== -->
+
+        <h2 class="section-title">
+            💬 Recent Chats
+        </h2>
+
+
+        <div id="recentChatsList">
+
+
+            {% if recent_chats %}
+
+
+                {% for chat in recent_chats %}
+
+
+                    <div
+                        class="recent-chat-card searchable-card"
+                    >
+
+
+                        <div class="recent-info">
+
+
+                            <h3>
+                                👤 {{ chat.user.name }}
+                            </h3>
+
+
+                            <p class="last-message">
+
+
+                                {% if chat.last_message|length > 45 %}
+
+                                    {{ chat.last_message[:45] }}...
+
+                                {% else %}
+
+                                    {{ chat.last_message }}
+
+                                {% endif %}
+
+
+                            </p>
+
+
+                            <p class="chat-time">
+
+                                {{ chat.last_message_time.strftime('%I:%M %p') }}
+
+                            </p>
+
+
+                        </div>
+
+
+                        <div class="chat-right">
+
+
+                            {% if chat.unread_count > 0 %}
+
+
+                                <span class="unread-badge">
+
+
+                                    {% if chat.unread_count > 99 %}
+
+                                        99+
+
+                                    {% else %}
+
+                                        {{ chat.unread_count }}
+
+                                    {% endif %}
+
+
+                                </span>
+
+
+                            {% endif %}
+
+
+                            <a
+                                class="chat-button"
+                                href="{{ url_for(
+                                    'chat',
+                                    user_id=chat.user.id
+                                ) }}"
+                            >
+
+                                <button>
+                                    Open Chat
+                                </button>
+
+                            </a>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <div class="no-chats searchable-card">
+
+                    💭 No recent chats yet.
+
+                    <br>
+
+                    Start a conversation with a student below!
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- ALL STUDENTS -->
+        <!-- ===================================== -->
+
+        <h2 class="section-title">
+            👥 All Students
+        </h2>
+
+
+        <div id="usersList">
+
+
+            {% for student in users %}
+
+
+                <div class="user-card searchable-card">
+
+
+                    <div>
+
+                        <h3>
+                            👤 {{ student.name }}
+                        </h3>
+
+
+                        <p>
+                            {{ student.email }}
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for(
+                            'chat',
+                            user_id=student.id
+                        ) }}"
+                    >
+
+                        <button>
+                            Chat
+                        </button>
+
+                    </a>
+
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- REAL-TIME NOTIFICATION TOAST -->
+    <!-- ========================================= -->
+
+    <div
+        id="notificationToast"
+        class="notification-toast"
+    >
+
+        <div class="toast-icon">
+            🔔
+        </div>
+
+
+        <div class="toast-content">
+
+            <strong id="toastTitle">
+                New Message
+            </strong>
+
+
+            <p id="toastMessage">
+                You received a new message.
+            </p>
+
+
+            <p class="toast-hint">
+                Tap to open chat
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- LOCAL SOCKET.IO -->
+    <!-- ========================================= -->
+
+    <script src="{{ url_for(
+        'static',
+        filename='js/socket.io.min.js'
+    ) }}"></script>
+
+
+    <!-- ========================================= -->
+    <!-- SEARCH -->
+    <!-- ========================================= -->
+
+    <script>
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+
+        const cards =
+            document.querySelectorAll(
+                ".searchable-card"
+            );
+
+
+        searchInput.addEventListener(
+            "input",
+            function() {
+
+                const searchValue =
+                    searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+
+                cards.forEach(
+                    function(card) {
+
+                        const text =
+                            card.textContent
+                            .toLowerCase();
+
+
+                        if (
+                            text.includes(
+                                searchValue
+                            )
+                        ) {
+
+                            card.style.display =
+                                "flex";
+
+                        } else {
+
+                            card.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+    <!-- ========================================= -->
+    <!-- REAL-TIME NOTIFICATIONS -->
+    <!-- ========================================= -->
+
+    <script>
+
+        // =========================================
+        // CONNECT SOCKET.IO
+        // =========================================
+
+        const socket = io();
+
+
+        // =========================================
+        // JOIN PERSONAL USER ROOM
+        // =========================================
+
+        socket.on(
+            "connect",
+            function() {
+
+                console.log(
+                    "🔌 Connected to server"
+                );
+
+
+                socket.emit(
+                    "join_user_room"
+                );
+
+            }
+        );
+
+
+        // =========================================
+        // NOTIFICATION SOUND
+        // =========================================
+
+        let audioContext = null;
+
+
+        function unlockNotificationSound() {
+
+            if (!audioContext) {
+
+                audioContext = new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+            }
+
+
+            if (
+                audioContext.state ===
+                "suspended"
+            ) {
+
+                audioContext.resume();
+
+            }
+
+
+            console.log(
+                "🔊 Notification sound unlocked!"
+            );
+
+        }
+
+
+        document.addEventListener(
+            "click",
+            unlockNotificationSound
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            unlockNotificationSound
+        );
+
+
+        document.addEventListener(
+            "touchstart",
+            unlockNotificationSound
+        );
+
+
+        // =========================================
+        // PLAY NOTIFICATION SOUND
+        // =========================================
+
+        async function playNotificationSound() {
+
+    if (!audioContext) {
+
+        audioContext = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+    }
+
+
+    // Make sure audio context is running
+
+    if (audioContext.state === "suspended") {
+
+        try {
+
+            await audioContext.resume();
+
+        } catch (error) {
+
+            console.log(
+                "🔇 Audio resume failed:",
+                error
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    if (audioContext.state !== "running") {
+
+        console.log(
+            "🔇 AudioContext is not running"
+        );
+
+        return;
+
+    }
+
+
+    const now =
+        audioContext.currentTime;
+
+
+    // =========================================
+    // FIRST TONE
+    // =========================================
+
+    const oscillator1 =
+        audioContext.createOscillator();
+
+
+    const gain1 =
+        audioContext.createGain();
+
+
+    oscillator1.type =
+        "sine";
+
+
+    oscillator1.frequency.setValueAtTime(
+        660,
+        now
+    );
+
+
+    gain1.gain.setValueAtTime(
+        0.0001,
+        now
+    );
+
+
+    gain1.gain.exponentialRampToValueAtTime(
+        0.16,
+        now + 0.02
+    );
+
+
+    gain1.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 0.18
+    );
+
+
+    oscillator1.connect(gain1);
+
+    gain1.connect(
+        audioContext.destination
+    );
+
+
+    oscillator1.start(now);
+
+    oscillator1.stop(
+        now + 0.18
+    );
+
+
+    // =========================================
+    // SECOND TONE
+    // =========================================
+
+    const oscillator2 =
+        audioContext.createOscillator();
+
+
+    const gain2 =
+        audioContext.createGain();
+
+
+    oscillator2.type =
+        "sine";
+
+
+    oscillator2.frequency.setValueAtTime(
+        880,
+        now + 0.12
+    );
+
+
+    gain2.gain.setValueAtTime(
+        0.0001,
+        now + 0.12
+    );
+
+
+    gain2.gain.exponentialRampToValueAtTime(
+        0.16,
+        now + 0.14
+    );
+
+
+    gain2.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 0.34
+    );
+
+
+    oscillator2.connect(gain2);
+
+    gain2.connect(
+        audioContext.destination
+    );
+
+
+    oscillator2.start(
+        now + 0.12
+    );
+
+    oscillator2.stop(
+        now + 0.34
+    );
+
+
+    console.log(
+        "🔔 CampusConnect notification sound played!"
+    );
+
+}
+        // =========================================
+        // SHOW TOAST
+        // =========================================
+
+        function showNotificationToast(
+            message,
+            senderId
+        ) {
+
+            const toast =
+                document.getElementById(
+                    "notificationToast"
+                );
+
+
+            const toastMessage =
+                document.getElementById(
+                    "toastMessage"
+                );
+
+
+            toastMessage.textContent =
+                message;
+
+
+            // Store sender ID
+            // so we know which chat to open
+
+            toast.dataset.senderId =
+                senderId;
+
+
+            toast.classList.add(
+                "show"
+            );
+
+
+            setTimeout(
+                function() {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                4000
+            );
+
+        }
+
+
+        // =========================================
+        // CLICK / TOUCH NOTIFICATION
+        // =========================================
+
+        document
+            .getElementById(
+                "notificationToast"
+            )
+            .addEventListener(
+                "click",
+                function() {
+
+                    const senderId =
+                        this.dataset.senderId;
+
+
+                    if (senderId) {
+
+                        console.log(
+                            "💬 Opening chat with user:",
+                            senderId
+                        );
+
+
+                        window.location.href =
+                            "/chat/" + senderId;
+
+                    }
+
+                }
+            );
+
+
+        // =========================================
+        // RECEIVE NOTIFICATION
+        // =========================================
+
+        socket.on(
+    "new_notification",
+    async function(data) {
+
+        console.log(
+            "🔔 New notification:",
+            data
+        );
+
+
+        // Play notification sound
+
+        await playNotificationSound();
+
+
+        // Show clickable toast
+
+        showNotificationToast(
+            data.message,
+            data.sender_id
+        );
+
+
+        // Update notification count
+
+        const countElement =
+            document.getElementById(
+                "notificationCount"
+            );
+
+
+        let currentCount = 0;
+
+
+        if (
+            countElement &&
+            countElement.style.display !== "none"
+        ) {
+
+            currentCount =
+                parseInt(
+                    countElement.textContent
+                ) || 0;
+
+        }
+
+
+        currentCount++;
+
+
+        if (countElement) {
+
+            countElement.textContent =
+                currentCount + " new";
+
+
+            countElement.style.display =
+                "inline-flex";
+
+        }
+
+    }
+);
+
+    </script>
+
+
+</body>
+
+</html>
+

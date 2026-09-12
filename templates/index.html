@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CampusConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <div class="home-container">
+
+        <!-- Navbar -->
+
+        <nav class="navbar">
+
+            <div class="logo">
+                🎓 CampusConnect
+            </div>
+
+            <div class="nav-links">
+
+                {% if session.get("user_id") %}
+
+                    <a href="{{ url_for('dashboard') }}">
+                        Chats
+                    </a>
+
+                    <a href="{{ url_for('logout') }}">
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url_for('login') }}">
+                        Login
+                    </a>
+
+                    <a href="{{ url_for('register') }}"
+                       class="nav-register">
+                        Register
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </nav>
+
+
+        <!-- Hero Section -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="badge">
+                    🚀 Your College. Your Community.
+                </div>
+
+
+                <h1>
+                    Connect with your
+                    <span>Campus.</span>
+                </h1>
+
+
+                <p>
+                    CampusConnect is a college-focused platform
+                    where students can connect, chat and
+                    collaborate with their campus community.
+                </p>
+
+
+                <div class="hero-buttons">
+
+                    {% if session.get("user_id") %}
+
+                        <a href="{{ url_for('dashboard') }}"
+                           class="primary-btn">
+                            Go to Chats 💬
+                        </a>
+
+                    {% else %}
+
+                        <a href="{{ url_for('register') }}"
+                           class="primary-btn">
+                            Get Started 🚀
+                        </a>
+
+                        <a href="{{ url_for('login') }}"
+                           class="secondary-btn">
+                            Login
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Right Side Card -->
+
+            <div class="hero-card">
+
+                <div class="chat-window">
+
+                    <div class="chat-title">
+                        💬 Campus Chat
+                    </div>
+
+
+                    <div class="chat-message other">
+                        Hey! Did you complete the
+                        assignment?
+                    </div>
+
+
+                    <div class="chat-message mine">
+                        Almost 😄 Just finishing it.
+                    </div>
+
+
+                    <div class="chat-message other">
+                        Nice! Let's discuss it later.
+                    </div>
+
+
+                    <div class="online">
+                        🟢 Students are online
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Features -->
+
+        <section class="features">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    💬
+                </div>
+
+                <h3>
+                    Real-Time Chat
+                </h3>
+
+                <p>
+                    Chat with your classmates instantly
+                    using real-time messaging.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🟢
+                </div>
+
+                <h3>
+                    Online Status
+                </h3>
+
+                <p>
+                    See when your friends and classmates
+                    are online.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🎓
+                </div>
+
+                <h3>
+                    College Community
+                </h3>
+
+                <p>
+                    Built specifically for students and
+                    campus communities.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+
+        <footer>
+
+            <p>
+                © 2026 CampusConnect • Connect. Chat. Collaborate.
+            </p>
+
+        </footer>
+
+    </div>
+
+</body>
+
+</html>
