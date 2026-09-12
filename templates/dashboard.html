@@ -9,7 +9,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>CampusConnect</title>
+    <title>CampusConnect Dashboard</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -17,72 +17,361 @@
     <style>
 
         /* =========================================
-           SECTION TITLE
+           DASHBOARD
            ========================================= */
 
-        .section-title {
-            margin-top: 35px;
-            margin-bottom: 15px;
+        body {
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #eef2ff,
+                    transparent 30%
+                ),
+                #f8fafc;
+            color: #172033;
         }
 
 
         /* =========================================
-           NOTIFICATION COUNT
+           NAVBAR
            ========================================= */
 
+        .dashboard-navbar {
+
+            width: 100%;
+            box-sizing: border-box;
+
+            background: rgba(255, 255, 255, 0.92);
+
+            backdrop-filter: blur(12px);
+
+            padding: 16px 5%;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+        }
+
+
+        .dashboard-logo {
+
+            font-size: 22px;
+            font-weight: 800;
+
+            color: #2563eb;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .logout-btn {
+
+            text-decoration: none;
+
+            color: #475569;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            padding: 9px 16px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.2s ease;
+        }
+
+
+        .logout-btn:hover {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+            border-color: #fecaca;
+        }
+
+
+        /* =========================================
+           MAIN CONTAINER
+           ========================================= */
+
+        .dashboard-container {
+
+            width: 92%;
+            max-width: 850px;
+
+            margin: 0 auto;
+
+            padding: 38px 0 60px;
+        }
+
+
+        /* =========================================
+           WELCOME
+           ========================================= */
+
+        .welcome-section {
+
+            margin-bottom: 28px;
+        }
+
+
+        .welcome-section h1 {
+
+            margin: 0;
+
+            font-size: 32px;
+
+            letter-spacing: -1px;
+        }
+
+
+        .welcome-section p {
+
+            margin: 8px 0 0;
+
+            color: #64748b;
+
+            font-size: 15px;
+        }
+
+
+        /* =========================================
+           SEARCH
+           ========================================= */
+
+        .search-wrapper {
+
+            position: relative;
+
+            margin-bottom: 34px;
+        }
+
+
+        .search-icon {
+
+            position: absolute;
+
+            left: 17px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            font-size: 17px;
+
+            color: #94a3b8;
+
+            pointer-events: none;
+        }
+
+
+        #searchInput {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 15px 18px 15px 46px;
+
+            margin: 0;
+
+            background: white;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 14px;
+
+            font-size: 15px;
+
+            color: #172033;
+
+            outline: none;
+
+            box-shadow:
+                0 5px 20px rgba(15, 23, 42, 0.05);
+
+            transition: 0.2s ease;
+        }
+
+
+        #searchInput::placeholder {
+
+            color: #94a3b8;
+        }
+
+
+        #searchInput:focus {
+
+            border-color: #93c5fd;
+
+            box-shadow:
+                0 0 0 4px rgba(37, 99, 235, 0.08);
+        }
+
+
+        /* =========================================
+           SECTION TITLE
+           ========================================= */
+
+        .section-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin: 30px 0 14px;
+        }
+
+
+        .section-header h2 {
+
+            margin: 0;
+
+            font-size: 18px;
+
+            letter-spacing: -0.3px;
+        }
+
+
         .notification-count {
+
             display: inline-flex;
 
             align-items: center;
             justify-content: center;
 
-            min-width: 28px;
-            height: 23px;
+            min-width: 25px;
 
-            padding: 0 9px;
-            margin-left: 8px;
+            height: 22px;
+
+            padding: 0 8px;
 
             background: #eef2ff;
+
             color: #4f46e5;
 
             border-radius: 999px;
 
-            font-size: 12px;
+            font-size: 11px;
+
             font-weight: 700;
         }
 
 
         /* =========================================
-           RECENT CHAT
+           RECENT CHATS
            ========================================= */
 
         .recent-chat-card {
 
             display: flex;
 
-            justify-content: space-between;
             align-items: center;
 
-            padding: 16px;
+            justify-content: space-between;
 
-            margin-bottom: 12px;
+            gap: 18px;
+
+            padding: 17px;
+
+            margin-bottom: 11px;
 
             background: white;
 
-            border-radius: 12px;
+            border: 1px solid #edf0f5;
+
+            border-radius: 15px;
 
             box-shadow:
-                0 3px 10px rgba(0, 0, 0, 0.08);
+                0 5px 18px rgba(15, 23, 42, 0.05);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
         }
 
 
-        .recent-info {
+        .recent-chat-card:hover {
+
+            transform: translateY(-2px);
+
+            border-color: #dbeafe;
+
+            box-shadow:
+                0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+
+
+        .recent-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            min-width: 0;
+
             flex: 1;
         }
 
 
+        .avatar {
+
+            width: 45px;
+            height: 45px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dbeafe,
+                    #e0e7ff
+                );
+
+            color: #3730a3;
+
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+
+        .recent-info {
+
+            min-width: 0;
+        }
+
+
         .recent-info h3 {
-            margin: 0 0 5px 0;
+
+            margin: 0 0 4px;
+
+            font-size: 15px;
+
+            color: #172033;
         }
 
 
@@ -90,65 +379,29 @@
 
             margin: 0;
 
-            color: #666;
+            color: #64748b;
 
-            font-size: 14px;
+            font-size: 13px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            max-width: 390px;
         }
 
 
         .chat-time {
 
-            font-size: 12px;
+            margin: 4px 0 0;
 
-            color: #888;
+            color: #94a3b8;
 
-            margin-top: 5px;
+            font-size: 11px;
         }
 
-
-        .chat-button {
-            text-decoration: none;
-        }
-
-
-        .chat-button button {
-            cursor: pointer;
-        }
-
-
-        .no-chats {
-
-            background: white;
-
-            padding: 20px;
-
-            border-radius: 12px;
-
-            color: #777;
-
-            text-align: center;
-
-            box-shadow:
-                0 3px 10px rgba(0, 0, 0, 0.06);
-        }
-
-
-        /* =========================================
-           USER CARD
-           ========================================= */
-
-        .user-card {
-
-            display: flex;
-
-            justify-content: space-between;
-            align-items: center;
-        }
-
-
-        /* =========================================
-           UNREAD CHAT BADGE
-           ========================================= */
 
         .chat-right {
 
@@ -156,14 +409,17 @@
 
             align-items: center;
 
-            gap: 12px;
+            gap: 9px;
+
+            flex-shrink: 0;
         }
 
 
         .unread-badge {
 
-            min-width: 24px;
-            height: 24px;
+            min-width: 23px;
+
+            height: 23px;
 
             padding: 0 7px;
 
@@ -172,22 +428,192 @@
             align-items: center;
             justify-content: center;
 
-            background: #eef2ff;
+            box-sizing: border-box;
 
-            color: #4f46e5;
+            background: #2563eb;
 
-            border-radius: 50px;
+            color: white;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+
+        .chat-button {
+
+            text-decoration: none;
+        }
+
+
+        .chat-button button,
+        .user-card button {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 9px 14px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
 
             font-size: 12px;
 
-            font-weight: bold;
+            font-weight: 700;
 
-            box-sizing: border-box;
+            transition: 0.2s ease;
+        }
+
+
+        .chat-button button:hover,
+        .user-card button:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
         }
 
 
         /* =========================================
-           REAL-TIME NOTIFICATION TOAST
+           EMPTY STATE
+           ========================================= */
+
+        .no-chats {
+
+            padding: 30px 20px;
+
+            background: white;
+
+            border: 1px dashed #dbe3ef;
+
+            border-radius: 15px;
+
+            color: #64748b;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =========================================
+           ALL STUDENTS
+           ========================================= */
+
+        #usersList {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 11px;
+        }
+
+
+        .user-card {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 16px;
+
+            background: white;
+
+            border: 1px solid #edf0f5;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 16px rgba(15, 23, 42, 0.04);
+
+            transition: 0.2s ease;
+        }
+
+
+        .user-card:hover {
+
+            transform: translateY(-2px);
+
+            border-color: #dbeafe;
+
+            box-shadow:
+                0 8px 22px rgba(15, 23, 42, 0.07);
+        }
+
+
+        .user-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            min-width: 0;
+        }
+
+
+        .user-avatar {
+
+            width: 42px;
+            height: 42px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #f1f5f9;
+
+            color: #475569;
+
+            font-size: 16px;
+
+            font-weight: 700;
+        }
+
+
+        .user-card h3 {
+
+            margin: 0 0 4px;
+
+            font-size: 15px;
+        }
+
+
+        .user-card p {
+
+            margin: 0;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        /* =========================================
+           NOTIFICATION TOAST
            ========================================= */
 
         .notification-toast {
@@ -203,17 +629,20 @@
 
             gap: 12px;
 
-            min-width: 280px;
-            max-width: 350px;
+            width: min(350px, calc(100vw - 30px));
 
-            padding: 14px 18px;
+            box-sizing: border-box;
 
-            background: white;
+            padding: 15px 17px;
 
-            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.97);
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 15px;
 
             box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.15);
+                0 15px 40px rgba(15, 23, 42, 0.16);
 
             transform: translateY(-20px);
 
@@ -242,19 +671,34 @@
         .notification-toast:hover {
 
             transform: translateY(-2px);
-
-            box-shadow:
-                0 12px 35px rgba(0, 0, 0, 0.20);
         }
 
 
         .toast-icon {
-            font-size: 25px;
+
+            width: 40px;
+            height: 40px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #eef2ff;
+
+            border-radius: 12px;
+
+            font-size: 20px;
         }
 
 
         .toast-content {
+
             flex: 1;
+
+            min-width: 0;
         }
 
 
@@ -262,9 +706,9 @@
 
             display: block;
 
-            font-size: 14px;
+            font-size: 13px;
 
-            color: #222;
+            color: #172033;
         }
 
 
@@ -272,45 +716,158 @@
 
             margin: 3px 0 0;
 
-            font-size: 13px;
+            font-size: 12px;
 
-            color: #666;
+            color: #64748b;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
         }
 
 
         .toast-hint {
 
-            margin-top: 5px !important;
+            color: #2563eb !important;
 
-            font-size: 11px !important;
+            font-size: 10px !important;
 
-            color: #4f46e5 !important;
-
-            font-weight: 600;
+            font-weight: 700;
         }
 
 
         /* =========================================
-           MOBILE TOAST
+           MOBILE
            ========================================= */
 
         @media (max-width: 600px) {
 
-            .notification-toast {
+            .dashboard-navbar {
 
-                top: 15px;
-
-                left: 15px;
-
-                right: 15px;
-
-                min-width: auto;
-
-                max-width: none;
-
-                padding: 14px;
+                padding: 14px 4%;
             }
 
+
+            .dashboard-logo {
+
+                font-size: 18px;
+            }
+
+
+            .logout-btn {
+
+                padding: 8px 12px;
+
+                font-size: 12px;
+            }
+
+
+            .dashboard-container {
+
+                width: 92%;
+
+                padding-top: 28px;
+            }
+
+
+            .welcome-section h1 {
+
+                font-size: 26px;
+            }
+
+
+            .welcome-section p {
+
+                font-size: 13px;
+            }
+
+
+            .recent-chat-card {
+
+                padding: 13px;
+
+                gap: 10px;
+            }
+
+
+            .avatar {
+
+                width: 40px;
+                height: 40px;
+
+                font-size: 16px;
+            }
+
+
+            .recent-info h3 {
+
+                font-size: 14px;
+            }
+
+
+            .last-message {
+
+                max-width: 190px;
+
+                font-size: 12px;
+            }
+
+
+            .chat-button button {
+
+                padding: 8px 10px;
+
+                font-size: 11px;
+            }
+
+
+            .user-card {
+
+                padding: 13px;
+            }
+
+
+            .user-card button {
+
+                padding: 8px 11px;
+            }
+
+
+            .notification-toast {
+
+                top: 12px;
+
+                left: 12px;
+
+                right: 12px;
+
+                width: auto;
+            }
+        }
+
+
+        @media (max-width: 400px) {
+
+            .chat-right {
+
+                gap: 5px;
+            }
+
+
+            .chat-button button {
+
+                font-size: 10px;
+
+                padding: 7px 8px;
+            }
+
+
+            .last-message {
+
+                max-width: 145px;
+            }
         }
 
     </style>
@@ -321,92 +878,113 @@
 <body>
 
 
-    <!-- ========================================= -->
-    <!-- NAVBAR -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         NAVBAR
+         ========================================= -->
 
-    <div class="navbar">
+    <nav class="dashboard-navbar">
 
-        <h2>
+        <div class="dashboard-logo">
             CampusConnect 🎓
-        </h2>
+        </div>
 
 
-        <a href="{{ url_for('logout') }}">
+        <a
+            href="{{ url_for('logout') }}"
+            class="logout-btn"
+        >
             Logout
         </a>
 
-    </div>
+    </nav>
 
 
-    <!-- ========================================= -->
-    <!-- MAIN CONTAINER -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         MAIN
+         ========================================= -->
 
-    <div class="container">
-
-
-        <h1>
-            Hello, {{ user.name }} 👋
-        </h1>
+    <main class="dashboard-container">
 
 
-        <p>
-            Find students and start a conversation.
-        </p>
+        <!-- WELCOME -->
+
+        <section class="welcome-section">
+
+            <h1>
+                Hello, {{ user.name }} 👋
+            </h1>
+
+            <p>
+                Connect with students and continue your conversations.
+            </p>
+
+        </section>
 
 
-        <!-- ===================================== -->
         <!-- SEARCH -->
-        <!-- ===================================== -->
 
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search students or chats..."
-        >
+        <div class="search-wrapper">
 
+            <span class="search-icon">
+                🔍
+            </span>
 
-        <!-- ===================================== -->
-        <!-- NOTIFICATIONS -->
-        <!-- ===================================== -->
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search students or chats..."
+                autocomplete="off"
+            >
 
-        <h2 class="section-title">
-
-            🔔 Notifications
-
-
-            {% if unread_notifications > 0 %}
-
-                <span
-                    class="notification-count"
-                    id="notificationCount"
-                >
-                    {{ unread_notifications }} new
-                </span>
-
-            {% else %}
-
-                <span
-                    class="notification-count"
-                    id="notificationCount"
-                    style="display: none;"
-                >
-                    0 new
-                </span>
-
-            {% endif %}
-
-        </h2>
+        </div>
 
 
-        <!-- ===================================== -->
-        <!-- RECENT CHATS -->
-        <!-- ===================================== -->
+        <!-- =====================================
+             NOTIFICATIONS
+             ===================================== -->
 
-        <h2 class="section-title">
-            💬 Recent Chats
-        </h2>
+        <div class="section-header">
+
+            <h2>
+                🔔 Notifications
+
+                {% if unread_notifications > 0 %}
+
+                    <span
+                        class="notification-count"
+                        id="notificationCount"
+                    >
+                        {{ unread_notifications }} new
+                    </span>
+
+                {% else %}
+
+                    <span
+                        class="notification-count"
+                        id="notificationCount"
+                        style="display: none;"
+                    >
+                        0 new
+                    </span>
+
+                {% endif %}
+
+            </h2>
+
+        </div>
+
+
+        <!-- =====================================
+             RECENT CHATS
+             ===================================== -->
+
+        <div class="section-header">
+
+            <h2>
+                💬 Recent Chats
+            </h2>
+
+        </div>
 
 
         <div id="recentChatsList">
@@ -423,37 +1001,43 @@
                     >
 
 
-                        <div class="recent-info">
+                        <div class="recent-left">
 
 
-                            <h3>
-                                👤 {{ chat.user.name }}
-                            </h3>
+                            <div class="avatar">
+                                {{ chat.user.name[0]|upper }}
+                            </div>
 
 
-                            <p class="last-message">
+                            <div class="recent-info">
+
+                                <h3>
+                                    {{ chat.user.name }}
+                                </h3>
 
 
-                                {% if chat.last_message|length > 45 %}
+                                <p class="last-message">
 
-                                    {{ chat.last_message[:45] }}...
+                                    {% if chat.last_message|length > 45 %}
 
-                                {% else %}
+                                        {{ chat.last_message[:45] }}...
 
-                                    {{ chat.last_message }}
+                                    {% else %}
 
-                                {% endif %}
+                                        {{ chat.last_message }}
+
+                                    {% endif %}
+
+                                </p>
 
 
-                            </p>
+                                <p class="chat-time">
 
+                                    {{ chat.last_message_time.strftime('%I:%M %p') }}
 
-                            <p class="chat-time">
+                                </p>
 
-                                {{ chat.last_message_time.strftime('%I:%M %p') }}
-
-                            </p>
-
+                            </div>
 
                         </div>
 
@@ -463,9 +1047,7 @@
 
                             {% if chat.unread_count > 0 %}
 
-
                                 <span class="unread-badge">
-
 
                                     {% if chat.unread_count > 99 %}
 
@@ -477,9 +1059,7 @@
 
                                     {% endif %}
 
-
                                 </span>
-
 
                             {% endif %}
 
@@ -492,12 +1072,11 @@
                                 ) }}"
                             >
 
-                                <button>
-                                    Open Chat
+                                <button type="button">
+                                    Open
                                 </button>
 
                             </a>
-
 
                         </div>
 
@@ -528,13 +1107,17 @@
         </div>
 
 
-        <!-- ===================================== -->
-        <!-- ALL STUDENTS -->
-        <!-- ===================================== -->
+        <!-- =====================================
+             ALL STUDENTS
+             ===================================== -->
 
-        <h2 class="section-title">
-            👥 All Students
-        </h2>
+        <div class="section-header">
+
+            <h2>
+                👥 All Students
+            </h2>
+
+        </div>
 
 
         <div id="usersList">
@@ -546,16 +1129,26 @@
                 <div class="user-card searchable-card">
 
 
-                    <div>
-
-                        <h3>
-                            👤 {{ student.name }}
-                        </h3>
+                    <div class="user-left">
 
 
-                        <p>
-                            {{ student.email }}
-                        </p>
+                        <div class="user-avatar">
+                            {{ student.name[0]|upper }}
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                {{ student.name }}
+                            </h3>
+
+
+                            <p>
+                                {{ student.email }}
+                            </p>
+
+                        </div>
 
                     </div>
 
@@ -567,7 +1160,7 @@
                         ) }}"
                     >
 
-                        <button>
+                        <button type="button">
                             Chat
                         </button>
 
@@ -583,12 +1176,12 @@
         </div>
 
 
-    </div>
+    </main>
 
 
-    <!-- ========================================= -->
-    <!-- REAL-TIME NOTIFICATION TOAST -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         NOTIFICATION TOAST
+         ========================================= -->
 
     <div
         id="notificationToast"
@@ -621,9 +1214,9 @@
     </div>
 
 
-    <!-- ========================================= -->
-    <!-- LOCAL SOCKET.IO -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         LOCAL SOCKET.IO
+         ========================================= -->
 
     <script src="{{ url_for(
         'static',
@@ -631,9 +1224,9 @@
     ) }}"></script>
 
 
-    <!-- ========================================= -->
-    <!-- SEARCH -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         SEARCH
+         ========================================= -->
 
     <script>
 
@@ -674,7 +1267,7 @@
                         ) {
 
                             card.style.display =
-                                "flex";
+                                "";
 
                         } else {
 
@@ -692,22 +1285,18 @@
     </script>
 
 
-    <!-- ========================================= -->
-    <!-- REAL-TIME NOTIFICATIONS -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         REAL-TIME NOTIFICATIONS
+         ========================================= -->
 
     <script>
-
-        // =========================================
-        // CONNECT SOCKET.IO
-        // =========================================
 
         const socket = io();
 
 
-        // =========================================
-        // JOIN PERSONAL USER ROOM
-        // =========================================
+        /* =========================================
+           CONNECT
+           ========================================= */
 
         socket.on(
             "connect",
@@ -726,9 +1315,9 @@
         );
 
 
-        // =========================================
-        // NOTIFICATION SOUND
-        // =========================================
+        /* =========================================
+           NOTIFICATION SOUND
+           ========================================= */
 
         let audioContext = null;
 
@@ -780,177 +1369,180 @@
         );
 
 
-        // =========================================
-        // PLAY NOTIFICATION SOUND
-        // =========================================
+        /* =========================================
+           PLAY NOTIFICATION SOUND
+           ========================================= */
 
         async function playNotificationSound() {
 
-    if (!audioContext) {
+            if (!audioContext) {
 
-        audioContext = new (
-            window.AudioContext ||
-            window.webkitAudioContext
-        )();
+                audioContext = new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
 
-    }
+            }
 
 
-    // Make sure audio context is running
+            if (
+                audioContext.state ===
+                "suspended"
+            ) {
 
-    if (audioContext.state === "suspended") {
+                try {
 
-        try {
+                    await audioContext.resume();
 
-            await audioContext.resume();
+                } catch (error) {
 
-        } catch (error) {
+                    console.log(
+                        "🔇 Audio resume failed:",
+                        error
+                    );
 
-            console.log(
-                "🔇 Audio resume failed:",
-                error
+                    return;
+
+                }
+
+            }
+
+
+            if (
+                audioContext.state !==
+                "running"
+            ) {
+
+                console.log(
+                    "🔇 AudioContext is not running"
+                );
+
+                return;
+
+            }
+
+
+            const now =
+                audioContext.currentTime;
+
+
+            /* FIRST TONE */
+
+            const oscillator1 =
+                audioContext.createOscillator();
+
+
+            const gain1 =
+                audioContext.createGain();
+
+
+            oscillator1.type =
+                "sine";
+
+
+            oscillator1.frequency.setValueAtTime(
+                660,
+                now
             );
 
-            return;
+
+            gain1.gain.setValueAtTime(
+                0.0001,
+                now
+            );
+
+
+            gain1.gain.exponentialRampToValueAtTime(
+                0.16,
+                now + 0.02
+            );
+
+
+            gain1.gain.exponentialRampToValueAtTime(
+                0.0001,
+                now + 0.18
+            );
+
+
+            oscillator1.connect(gain1);
+
+            gain1.connect(
+                audioContext.destination
+            );
+
+
+            oscillator1.start(now);
+
+            oscillator1.stop(
+                now + 0.18
+            );
+
+
+            /* SECOND TONE */
+
+            const oscillator2 =
+                audioContext.createOscillator();
+
+
+            const gain2 =
+                audioContext.createGain();
+
+
+            oscillator2.type =
+                "sine";
+
+
+            oscillator2.frequency.setValueAtTime(
+                880,
+                now + 0.12
+            );
+
+
+            gain2.gain.setValueAtTime(
+                0.0001,
+                now + 0.12
+            );
+
+
+            gain2.gain.exponentialRampToValueAtTime(
+                0.16,
+                now + 0.14
+            );
+
+
+            gain2.gain.exponentialRampToValueAtTime(
+                0.0001,
+                now + 0.34
+            );
+
+
+            oscillator2.connect(gain2);
+
+            gain2.connect(
+                audioContext.destination
+            );
+
+
+            oscillator2.start(
+                now + 0.12
+            );
+
+
+            oscillator2.stop(
+                now + 0.34
+            );
+
+
+            console.log(
+                "🔔 CampusConnect notification sound played!"
+            );
 
         }
 
-    }
 
-
-    if (audioContext.state !== "running") {
-
-        console.log(
-            "🔇 AudioContext is not running"
-        );
-
-        return;
-
-    }
-
-
-    const now =
-        audioContext.currentTime;
-
-
-    // =========================================
-    // FIRST TONE
-    // =========================================
-
-    const oscillator1 =
-        audioContext.createOscillator();
-
-
-    const gain1 =
-        audioContext.createGain();
-
-
-    oscillator1.type =
-        "sine";
-
-
-    oscillator1.frequency.setValueAtTime(
-        660,
-        now
-    );
-
-
-    gain1.gain.setValueAtTime(
-        0.0001,
-        now
-    );
-
-
-    gain1.gain.exponentialRampToValueAtTime(
-        0.16,
-        now + 0.02
-    );
-
-
-    gain1.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 0.18
-    );
-
-
-    oscillator1.connect(gain1);
-
-    gain1.connect(
-        audioContext.destination
-    );
-
-
-    oscillator1.start(now);
-
-    oscillator1.stop(
-        now + 0.18
-    );
-
-
-    // =========================================
-    // SECOND TONE
-    // =========================================
-
-    const oscillator2 =
-        audioContext.createOscillator();
-
-
-    const gain2 =
-        audioContext.createGain();
-
-
-    oscillator2.type =
-        "sine";
-
-
-    oscillator2.frequency.setValueAtTime(
-        880,
-        now + 0.12
-    );
-
-
-    gain2.gain.setValueAtTime(
-        0.0001,
-        now + 0.12
-    );
-
-
-    gain2.gain.exponentialRampToValueAtTime(
-        0.16,
-        now + 0.14
-    );
-
-
-    gain2.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 0.34
-    );
-
-
-    oscillator2.connect(gain2);
-
-    gain2.connect(
-        audioContext.destination
-    );
-
-
-    oscillator2.start(
-        now + 0.12
-    );
-
-    oscillator2.stop(
-        now + 0.34
-    );
-
-
-    console.log(
-        "🔔 CampusConnect notification sound played!"
-    );
-
-}
-        // =========================================
-        // SHOW TOAST
-        // =========================================
+        /* =========================================
+           SHOW TOAST
+           ========================================= */
 
         function showNotificationToast(
             message,
@@ -972,9 +1564,6 @@
             toastMessage.textContent =
                 message;
 
-
-            // Store sender ID
-            // so we know which chat to open
 
             toast.dataset.senderId =
                 senderId;
@@ -999,9 +1588,9 @@
         }
 
 
-        // =========================================
-        // CLICK / TOUCH NOTIFICATION
-        // =========================================
+        /* =========================================
+           TOAST CLICK
+           ========================================= */
 
         document
             .getElementById(
@@ -1017,12 +1606,6 @@
 
                     if (senderId) {
 
-                        console.log(
-                            "💬 Opening chat with user:",
-                            senderId
-                        );
-
-
                         window.location.href =
                             "/chat/" + senderId;
 
@@ -1032,73 +1615,67 @@
             );
 
 
-        // =========================================
-        // RECEIVE NOTIFICATION
-        // =========================================
+        /* =========================================
+           RECEIVE NOTIFICATION
+           ========================================= */
 
         socket.on(
-    "new_notification",
-    async function(data) {
+            "new_notification",
+            async function(data) {
 
-        console.log(
-            "🔔 New notification:",
-            data
+                console.log(
+                    "🔔 New notification:",
+                    data
+                );
+
+
+                await playNotificationSound();
+
+
+                showNotificationToast(
+                    data.message,
+                    data.sender_id
+                );
+
+
+                const countElement =
+                    document.getElementById(
+                        "notificationCount"
+                    );
+
+
+                let currentCount = 0;
+
+
+                if (
+                    countElement &&
+                    countElement.style.display !== "none"
+                ) {
+
+                    currentCount =
+                        parseInt(
+                            countElement.textContent
+                        ) || 0;
+
+                }
+
+
+                currentCount++;
+
+
+                if (countElement) {
+
+                    countElement.textContent =
+                        currentCount + " new";
+
+
+                    countElement.style.display =
+                        "inline-flex";
+
+                }
+
+            }
         );
-
-
-        // Play notification sound
-
-        await playNotificationSound();
-
-
-        // Show clickable toast
-
-        showNotificationToast(
-            data.message,
-            data.sender_id
-        );
-
-
-        // Update notification count
-
-        const countElement =
-            document.getElementById(
-                "notificationCount"
-            );
-
-
-        let currentCount = 0;
-
-
-        if (
-            countElement &&
-            countElement.style.display !== "none"
-        ) {
-
-            currentCount =
-                parseInt(
-                    countElement.textContent
-                ) || 0;
-
-        }
-
-
-        currentCount++;
-
-
-        if (countElement) {
-
-            countElement.textContent =
-                currentCount + " new";
-
-
-            countElement.style.display =
-                "inline-flex";
-
-        }
-
-    }
-);
 
     </script>
 

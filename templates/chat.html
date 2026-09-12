@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -7,7 +6,7 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-   content="width=device-width, initial-scale=1.0">
+      content="width=device-width, initial-scale=1.0">
 
 <title>Chat - CampusConnect</title>
 
@@ -16,204 +15,444 @@
 
 <style>
 
-/* =================================
-   Attachment Bar
-================================= */
+/* =====================================================
+   CHAT PAGE
+===================================================== */
 
-.message-form {
+body {
+    margin: 0;
+    background: #eef2f7;
+}
+
+
+/* =====================================================
+   MAIN CHAT CONTAINER
+===================================================== */
+
+.chat-container {
+
+    width: min(100%, 900px);
+
+    height: 100vh;
+    height: 100dvh;
+
+    margin: auto;
+
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 0 30px rgba(15, 23, 42, 0.10);
 }
 
-.attachment-label {
-    width: 44px;
-    height: 44px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* =====================================================
+   CHAT HEADER
+===================================================== */
 
-    border-radius: 50%;
+.chat-header {
 
-    background: #f1f3f5;
+    position: relative;
 
-    cursor: pointer;
+    display: grid;
 
-    font-size: 22px;
-
-    transition: 0.2s;
-}
-
-.attachment-label:hover {
-    background: #e2e6ea;
-    transform: scale(1.05);
-}
-
-#fileInput {
-    display: none;
-}
-
-.selected-file {
-    display: none;
-
-    padding: 8px 12px;
-
-    margin-bottom: 8px;
-
-    background: #f5f7fb;
-
-    border-radius: 10px;
-
-    font-size: 14px;
-
-    color: #444;
-}
-
-.selected-file.show {
-    display: flex;
+    grid-template-columns: 70px 1fr 70px;
 
     align-items: center;
 
-    justify-content: space-between;
-}
+    min-height: 74px;
 
-.remove-file {
-    border: none;
+    padding: 10px 18px;
 
-    background: transparent;
+    /* SOFT + CUTE HEADER */
 
-    cursor: pointer;
+    background:
+        linear-gradient(
+            135deg,
+            #4f7df3,
+            #6d8ff5 50%,
+            #8b9cf6
+        );
 
-    font-size: 18px;
+    color: white;
 
-    color: #777;
-}
+    box-shadow:
+        0 4px 16px
+        rgba(79, 125, 243, 0.20);
 
+    z-index: 10;
 
-/* =================================
-   Attachment Messages
-================================= */
-
-.attachment-message {
-    max-width: 280px;
-}
-
-.attachment-image {
-    display: block;
-
-    max-width: 260px;
-    max-height: 300px;
-
-    border-radius: 12px;
-
-    cursor: pointer;
-
-    object-fit: cover;
-}
-
-.attachment-video {
-    width: 260px;
-
-    max-height: 300px;
-
-    border-radius: 12px;
-}
-
-.attachment-audio {
-    width: 260px;
-}
-
-.file-card {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    padding: 12px;
-
-    background: rgba(255,255,255,0.7);
-
-    border-radius: 10px;
-
-    text-decoration: none;
-
-    color: inherit;
-
-    min-width: 200px;
-}
-
-.file-icon {
-    font-size: 28px;
-}
-
-.file-info {
     overflow: hidden;
 }
 
-.file-name {
+
+/* Soft shine */
+
+.chat-header::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+
+    height: 180px;
+
+    top: -100px;
+
+    right: -40px;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+/* Back Button */
+
+.chat-header > a {
+
+    position: relative;
+
+    z-index: 2;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
     font-weight: 600;
+
+    width: fit-content;
+
+    padding: 8px 11px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(255,255,255,0.10);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.chat-header > a:hover {
+
+    background:
+        rgba(255,255,255,0.20);
+
+    transform:
+        translateX(-2px);
+}
+
+
+/* User Name */
+
+.chat-header h2 {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0;
+
+    text-align: center;
+
+    font-size: 19px;
+
+    font-weight: 700;
 
     white-space: nowrap;
 
     overflow: hidden;
 
     text-overflow: ellipsis;
+
+    text-shadow:
+        0 1px 3px
+        rgba(0,0,0,0.10);
 }
 
-.file-label {
+
+/* Status */
+
+#userStatus {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin: 3px 0 0;
+
+    text-align: center;
+
     font-size: 12px;
 
-    color: #777;
+    opacity: 0.95;
 }
 
 
-/* =================================
-   Upload Progress
-================================= */
+/* Typing */
 
-.upload-status {
-    display: none;
+#typingStatus {
 
-    font-size: 13px;
+    position: absolute;
 
-    color: #666;
+    left: 50%;
 
-    margin-bottom: 6px;
+    transform:
+        translateX(-50%);
+
+    bottom: 3px;
+
+    margin: 0;
+
+    font-size: 11px;
+
+    color:
+        rgba(255,255,255,0.90);
+
+    white-space: nowrap;
+
+    z-index: 3;
 }
 
-.upload-status.show {
-    display: block;
+
+/* =====================================================
+   MESSAGES AREA
+===================================================== */
+
+.messages {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding:
+        20px
+        18px
+        18px;
+
+    background:
+
+        radial-gradient(
+            circle at top left,
+            rgba(37,99,235,0.045),
+            transparent 35%
+        ),
+
+        #f4f6fa;
+
+    scroll-behavior: smooth;
 }
 
 
-/* =================================
-   Message Wrapper
-================================= */
+/* Scrollbar */
+
+.messages::-webkit-scrollbar {
+
+    width: 6px;
+}
+
+
+.messages::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+
+.messages::-webkit-scrollbar-thumb {
+
+    background: #cbd5e1;
+
+    border-radius: 20px;
+}
+
+
+/* =====================================================
+   MESSAGE WRAPPER
+===================================================== */
 
 .message-wrapper {
+
     position: relative;
+
     display: flex;
-    align-items: center;
+
+    align-items: flex-end;
+
     width: 100%;
-    margin-bottom: 10px;
+
+    margin-bottom: 9px;
 }
 
-/* Mere messages → RIGHT */
+
 .my-wrapper {
+
     justify-content: flex-end;
 }
 
-/* Dusre user ke messages → LEFT */
+
 .other-wrapper {
+
     justify-content: flex-start;
 }
 
 
-/* =================================
-   Delete Message Button
-================================= */
+/* =====================================================
+   MESSAGE BUBBLES
+===================================================== */
+
+.message {
+
+    position: relative;
+
+    max-width:
+        min(72%, 520px);
+
+    padding:
+        10px
+        13px
+        7px;
+
+    border-radius: 16px;
+
+    word-wrap: break-word;
+
+    overflow-wrap: anywhere;
+
+    box-shadow:
+        0 2px 7px
+        rgba(15,23,42,0.06);
+
+    animation:
+        messageAppear
+        0.18s
+        ease-out;
+}
+
+
+@keyframes messageAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(5px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =====================================================
+   YOUR MESSAGE
+===================================================== */
+
+.my-message {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    color: white;
+
+    border-bottom-right-radius: 5px;
+
+    padding-right: 42px;
+
+    box-shadow:
+        0 3px 10px
+        rgba(37,99,235,0.18);
+}
+
+
+/* =====================================================
+   OTHER USER MESSAGE
+===================================================== */
+
+.other-message {
+
+    background: white;
+
+    color: #1f2937;
+
+    border:
+        1px solid #e6eaf0;
+
+    border-bottom-left-radius: 5px;
+}
+
+
+/* Message Text */
+
+.message p {
+
+    margin: 0;
+
+    line-height: 1.45;
+
+    font-size: 15px;
+}
+
+
+/* Timestamp */
+
+.message small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    text-align: right;
+
+    opacity: 0.72;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   READ STATUS
+===================================================== */
+
+.read-status {
+
+    margin-left: 3px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: -2px;
+}
+
+
+/* =====================================================
+   DELETE BUTTON
+===================================================== */
 
 .delete-message-btn {
 
@@ -223,21 +462,26 @@
 
     right: 7px;
 
-    width: 30px;
-    height: 30px;
+    width: 27px;
+
+    height: 27px;
 
     border: none;
 
     border-radius: 50%;
 
-    background: white;
+    background:
+        rgba(255,255,255,0.96);
+
+    color: #555;
 
     box-shadow:
-        0 3px 10px rgba(0,0,0,0.18);
+        0 3px 10px
+        rgba(0,0,0,0.16);
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-size: 13px;
 
     display: flex;
 
@@ -245,70 +489,199 @@
 
     justify-content: center;
 
-    opacity: 1;
+    opacity: 0;
 
-    transition: 0.2s ease;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease;
 
     z-index: 20;
 }
 
 
-/* Only own messages show delete button */
-
-.other-wrapper .delete-message-btn {
-    display: none;
+.my-message:hover .delete-message-btn,
+.other-message:hover .delete-message-btn {
+    opacity: 1;
 }
 
 
-/* Hover */
+
+
 
 .delete-message-btn:hover {
 
     background: #fff1f2;
 
-    transform: scale(1.08);
+    transform:
+        scale(1.08);
+}
+
+
+/* =====================================================
+   ATTACHMENTS
+===================================================== */
+
+.attachment-message {
+
+    max-width: 280px;
+}
+
+
+/* Image */
+
+.attachment-image {
+
+    display: block;
+
+    width: auto;
+
+    max-width: 260px;
+
+    max-height: 300px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    object-fit: cover;
 
     box-shadow:
-        0 5px 14px rgba(0,0,0,0.22);
+        0 2px 8px
+        rgba(0,0,0,0.12);
 }
 
 
-/* Give own message space for dustbin */
+/* Video */
 
-.my-message {
+.attachment-video {
 
-    position: relative;
+    display: block;
 
-    padding-right: 44px;
+    width: 260px;
+
+    max-width: 100%;
+
+    max-height: 300px;
+
+    border-radius: 12px;
+
+    background: #111827;
 }
 
 
-/* Mobile */
+/* Audio */
 
-@media (max-width: 600px) {
+.attachment-audio {
 
-    .delete-message-btn {
+    width: 260px;
 
-        width: 28px;
-        height: 28px;
+    max-width: 100%;
 
-        top: 5px;
-        right: 5px;
-
-        font-size: 14px;
-    }
-
-    .my-message {
-
-        padding-right: 40px;
-    }
-
+    height: 40px;
 }
 
 
-/* =================================
-   Scroll To Bottom Area
-================================= */
+/* =====================================================
+   FILE CARD
+===================================================== */
+
+.file-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 190px;
+
+    max-width: 260px;
+
+    padding:
+        11px
+        12px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,0.16);
+
+    text-decoration: none;
+
+    color: inherit;
+
+    transition: 0.2s ease;
+}
+
+
+.other-message
+.file-card {
+
+    background: #f1f4f8;
+}
+
+
+.file-card:hover {
+
+    transform:
+        translateY(-1px);
+
+    background:
+        rgba(255,255,255,0.25);
+}
+
+
+.other-message
+.file-card:hover {
+
+    background: #e8edf4;
+}
+
+
+.file-icon {
+
+    font-size: 27px;
+
+    flex-shrink: 0;
+}
+
+
+.file-info {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.file-name {
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.file-label {
+
+    font-size: 11px;
+
+    opacity: 0.72;
+}
+
+
+/* =====================================================
+   SCROLL TO BOTTOM
+===================================================== */
 
 .scroll-button-area {
 
@@ -318,57 +691,49 @@
 
     position: relative;
 
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
     z-index: 1000;
 }
 
-
-/* =================================
-   Scroll To Bottom Button
-================================= */
 
 #scrollToBottom {
 
     position: absolute;
 
-    bottom: 10px;
+    bottom: 12px;
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
-    width: 42px;
-    height: 42px;
+    width: 40px;
 
-    border: none;
+    height: 40px;
+
+    border:
+        1px solid #e5e7eb;
 
     border-radius: 50%;
 
     background: white;
 
-    color: #4f46e5;
+    color: #2563eb;
 
-    font-size: 23px;
+    font-size: 21px;
 
-    font-weight: bold;
+    font-weight: 700;
 
     cursor: pointer;
 
     box-shadow:
-        0 4px 15px rgba(0,0,0,0.20);
+        0 5px 18px
+        rgba(15,23,42,0.16);
 
     display: none;
 
     align-items: center;
 
     justify-content: center;
-
-    z-index: 1000;
 
     transition: 0.2s ease;
 }
@@ -378,33 +743,288 @@
 
     transform:
         translateX(-50%)
-        scale(1.08);
+        translateY(-2px)
+        scale(1.06);
+}
+
+
+/* =====================================================
+   SELECTED FILE
+===================================================== */
+
+.selected-file {
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin:
+        0
+        14px
+        7px;
+
+    padding:
+        8px
+        12px;
+
+    background: #f1f5f9;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    color: #444;
+}
+
+
+.selected-file.show {
+
+    display: flex;
+}
+
+
+#selectedFileName {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.remove-file {
+
+    flex-shrink: 0;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    color: #777;
+
+    width: 28px;
+
+    height: 28px;
+
+    border-radius: 50%;
+}
+
+
+.remove-file:hover {
+
+    background: #e5e7eb;
+}
+
+
+/* =====================================================
+   UPLOAD STATUS
+===================================================== */
+
+.upload-status {
+
+    display: none;
+
+    margin:
+        0
+        15px
+        6px;
+
+    padding:
+        5px
+        3px;
+
+    font-size: 12px;
+
+    color: #64748b;
+}
+
+
+.upload-status.show {
+
+    display: block;
+}
+
+
+/* =====================================================
+   MESSAGE INPUT
+===================================================== */
+
+.message-form {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        10px
+        12px;
+
+    background: white;
+
+    border-top:
+        1px solid #e5e7eb;
 
     box-shadow:
-        0 6px 18px rgba(0,0,0,0.25);
+        0 -3px 15px
+        rgba(15,23,42,0.04);
 }
 
 
-/* Mobile */
+/* Attachment Button */
 
-@media (max-width: 600px) {
+.attachment-label {
 
-    #scrollToBottom {
+    flex-shrink: 0;
 
-        width: 40px;
-        height: 40px;
+    width: 42px;
 
-        font-size: 21px;
+    height: 42px;
 
-        bottom: 8px;
-    }
+    display: flex;
 
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    transition: 0.2s ease;
 }
 
 
-/* =================================
-   Delete Confirmation
-================================= */
+.attachment-label:hover {
+
+    background: #e2e8f0;
+
+    transform:
+        scale(1.05);
+}
+
+
+#fileInput {
+
+    display: none;
+}
+
+
+/* Message Input */
+
+#messageInput {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 42px;
+
+    padding:
+        0
+        15px;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius: 22px;
+
+    outline: none;
+
+    background: #f8fafc;
+
+    font-size: 14px;
+
+    transition: 0.2s ease;
+}
+
+
+#messageInput:focus {
+
+    background: white;
+
+    border-color: #60a5fa;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,0.10);
+}
+
+
+/* Send Button */
+
+#messageForm >
+button[type="submit"] {
+
+    flex-shrink: 0;
+
+    height: 42px;
+
+    padding:
+        0
+        17px;
+
+    border: none;
+
+    border-radius: 21px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 10px
+        rgba(37,99,235,0.22);
+
+    transition: 0.2s ease;
+}
+
+
+#messageForm >
+button[type="submit"]:hover {
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 6px 14px
+        rgba(37,99,235,0.28);
+}
+
+
+/* =====================================================
+   DELETE POPUP
+===================================================== */
 
 .delete-confirm-overlay {
 
@@ -413,7 +1033,10 @@
     inset: 0;
 
     background:
-        rgba(0,0,0,0.35);
+        rgba(15,23,42,0.42);
+
+    backdrop-filter:
+        blur(4px);
 
     display: none;
 
@@ -422,39 +1045,80 @@
     justify-content: center;
 
     z-index: 2000;
+
+    padding: 20px;
 }
+
 
 .delete-confirm-box {
 
-    width: min(90%, 330px);
+    width:
+        min(100%, 340px);
 
     background: white;
 
-    border-radius: 16px;
+    border-radius: 18px;
 
-    padding: 22px;
+    padding: 24px;
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,0.25);
+        0 18px 50px
+        rgba(0,0,0,0.25);
 
     text-align: center;
+
+    animation:
+        popupAppear
+        0.18s
+        ease-out;
 }
+
+
+@keyframes popupAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            scale(0.95);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            scale(1);
+    }
+}
+
 
 .delete-confirm-box h3 {
 
-    margin-top: 0;
+    margin:
+        0
+        0
+        7px;
 
-    margin-bottom: 8px;
+    font-size: 18px;
+
+    color: #222;
 }
+
 
 .delete-confirm-box p {
 
-    color: #666;
+    color: #64748b;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    margin-bottom: 20px;
+    margin:
+        0
+        0
+        20px;
 }
+
 
 .delete-actions {
 
@@ -465,26 +1129,39 @@
     justify-content: center;
 }
 
+
 .delete-cancel,
 .delete-confirm {
 
     border: none;
 
-    padding: 10px 18px;
+    padding:
+        10px
+        20px;
 
-    border-radius: 9px;
+    border-radius: 10px;
 
     cursor: pointer;
 
     font-weight: 600;
+
+    transition: 0.2s ease;
 }
+
 
 .delete-cancel {
 
-    background: #f1f3f5;
+    background: #f1f5f9;
 
     color: #444;
 }
+
+
+.delete-cancel:hover {
+
+    background: #e2e8f0;
+}
+
 
 .delete-confirm {
 
@@ -493,587 +1170,948 @@
     color: white;
 }
 
+
 .delete-confirm:hover {
 
     background: #b91c1c;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .chat-container {
+
+        width: 100%;
+
+        box-shadow: none;
+    }
+
+
+    .chat-header {
+
+        grid-template-columns:
+            62px
+            1fr
+            20px;
+
+        min-height: 64px;
+
+        padding:
+            8px
+            10px;
+    }
+
+
+    .chat-header > a {
+
+        font-size: 14px;
+
+        padding:
+            7px
+            6px;
+    }
+
+
+    .chat-header h2 {
+
+        font-size: 17px;
+    }
+
+
+    #userStatus {
+
+        font-size: 11px;
+    }
+
+
+    #typingStatus {
+
+        bottom: 1px;
+
+        font-size: 10px;
+    }
+
+
+    .messages {
+
+        padding:
+            14px
+            10px;
+    }
+
+
+    .message {
+
+        max-width: 80%;
+
+        padding:
+            9px
+            11px
+            6px;
+    }
+
+
+    .message p {
+
+        font-size: 14px;
+    }
+
+
+    .message small {
+
+        font-size: 9px;
+    }
+
+
+    .attachment-image {
+
+        max-width: 220px;
+
+        max-height: 260px;
+    }
+
+
+    .attachment-video {
+
+        width: 220px;
+
+        max-height: 260px;
+    }
+
+
+    .attachment-audio {
+
+        width: 220px;
+    }
+
+
+    .file-card {
+
+        min-width: 160px;
+
+        max-width: 220px;
+    }
+
+
+    .delete-message-btn {
+
+        width: 27px;
+
+        height: 27px;
+
+        top: 5px;
+
+        right: 5px;
+
+        opacity: 1;
+
+        font-size: 12px;
+    }
+
+
+    .my-message {
+
+        padding-right: 38px;
+    }
+
+
+    .message-form {
+
+        gap: 6px;
+
+        padding:
+            8px
+            8px
+            max(
+                8px,
+                env(safe-area-inset-bottom)
+            );
+    }
+
+
+    .attachment-label {
+
+        width: 40px;
+
+        height: 40px;
+
+        font-size: 19px;
+    }
+
+
+    #messageInput {
+
+        height: 40px;
+
+        padding:
+            0
+            13px;
+
+        font-size: 14px;
+    }
+
+
+    #messageForm >
+    button[type="submit"] {
+
+        height: 40px;
+
+        padding:
+            0
+            14px;
+
+        font-size: 13px;
+    }
+
+
+    #scrollToBottom {
+
+        width: 38px;
+
+        height: 38px;
+
+        bottom: 9px;
+
+        font-size: 20px;
+    }
+
+}
+
+
+/* =====================================================
+   VERY SMALL PHONES
+===================================================== */
+
+@media (max-width: 380px) {
+
+    .chat-header {
+
+        grid-template-columns:
+            55px
+            1fr
+            10px;
+    }
+
+
+    .chat-header > a {
+
+        font-size: 13px;
+    }
+
+
+    #messageForm >
+    button[type="submit"] {
+
+        padding:
+            0
+            11px;
+
+        font-size: 12px;
+    }
+
+
+    .attachment-label {
+
+        width: 38px;
+
+        height: 38px;
+    }
+
+
+    #messageInput {
+
+        height: 38px;
+    }
+
 }
 
 </style>
 
 </head>
 
+
 <body>
+
 
 <div class="chat-container">
 
-<!-- =================================
-     Chat Header
-================================= -->
+
+<!-- =====================================================
+     CHAT HEADER
+===================================================== -->
 
 <div class="chat-header">
 
 
-<a href="{{ url_for('dashboard') }}">
-    ← Back
-</a>
+    <a href="{{ url_for('dashboard') }}">
+        ← Back
+    </a>
 
-<h2>{{ other_user.name }}</h2>
 
-<p id="userStatus">
-    ⚫ Offline
-</p>
+    <div>
 
-<p id="typingStatus"></p>
+        <h2>
+            {{ other_user.name }}
+        </h2>
+
+
+        <p id="userStatus">
+            ⚫ Offline
+        </p>
+
+    </div>
+
+
+    <div></div>
+
+
+    <p id="typingStatus"></p>
 
 
 </div>
 
-<!-- =================================
-     Messages
-================================= -->
 
-<div class="messages"
-     id="messages">
+<!-- =====================================================
+     MESSAGES
+===================================================== -->
+
+<div
+    class="messages"
+    id="messages"
+>
+
 
 {% for message in messages %}
 
-    <div class="message-wrapper
-                {% if message.sender_id == current_user.id %}
-                    my-wrapper
-                {% else %}
-                    other-wrapper
-                {% endif %}">
 
+<div
+    class="message-wrapper
+    {% if message.sender_id == current_user.id %}
+        my-wrapper
+    {% else %}
+        other-wrapper
+    {% endif %}"
+>
 
-        {% if message.sender_id == current_user.id %}
 
+{% if message.sender_id == current_user.id %}
 
-            <div class="message my-message"
-                 data-message-id="{{ message.id }}">
 
+<!-- =================================================
+     MY MESSAGE
+================================================= -->
 
-                {% if message.message_type == "image" %}
+<div
+    class="message my-message"
+    data-message-id="{{ message.id }}"
+>
 
-                    <div class="attachment-message">
 
-                        <img
-                            src="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                            class="attachment-image"
-                            alt="{{ message.file_name }}"
-                        >
+{% if message.message_type == "image" %}
 
-                    </div>
 
+    <div class="attachment-message">
 
-                {% elif message.message_type == "video" %}
-
-                    <div class="attachment-message">
-
-                        <video
-                            class="attachment-video"
-                            controls
-                        >
-
-                            <source
-                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                            >
-
-                            Your browser does not support video.
-
-                        </video>
-
-                    </div>
-
-
-                {% elif message.message_type == "audio" %}
-
-                    <div class="attachment-message">
-
-                        <audio
-                            class="attachment-audio"
-                            controls
-                        >
-
-                            <source
-                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                            >
-
-                            Your browser does not support audio.
-
-                        </audio>
-
-                    </div>
-
-
-                {% elif message.message_type == "file" %}
-
-                    <a
-                        href="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                        class="file-card"
-                        target="_blank"
-                    >
-
-                        <span class="file-icon">
-                            📄
-                        </span>
-
-                        <span class="file-info">
-
-                            <span class="file-name">
-                                {{ message.file_name }}
-                            </span>
-
-                            <span class="file-label">
-                                Open file
-                            </span>
-
-                        </span>
-
-                    </a>
-
-
-                {% else %}
-
-                    <p>
-                        {{ message.body }}
-                    </p>
-
-                {% endif %}
-
-
-                <small>
-
-                    {{ message.created_at.strftime('%I:%M %p') }}
-
-                    <span class="read-status">
-
-                        {% if message.is_read %}
-                            ✓✓
-                        {% else %}
-                            ✓
-                        {% endif %}
-
-                    </span>
-
-                </small>
-
-
-                <!-- Delete button INSIDE own message -->
-
-                <button
-                    type="button"
-                    class="delete-message-btn"
-                    data-message-id="{{ message.id }}"
-                    title="Delete message"
-                >
-                    🗑️
-                </button>
-
-
-            </div>
-
-
-        {% else %}
-
-
-            <div class="message other-message"
-                 data-message-id="{{ message.id }}">
-
-
-                {% if message.message_type == "image" %}
-
-                    <div class="attachment-message">
-
-                        <img
-                            src="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                            class="attachment-image"
-                            alt="{{ message.file_name }}"
-                        >
-
-                    </div>
-
-
-                {% elif message.message_type == "video" %}
-
-                    <div class="attachment-message">
-
-                        <video
-                            class="attachment-video"
-                            controls
-                        >
-
-                            <source
-                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                            >
-
-                            Your browser does not support video.
-
-                        </video>
-
-                    </div>
-
-
-                {% elif message.message_type == "audio" %}
-
-                    <div class="attachment-message">
-
-                        <audio
-                            class="attachment-audio"
-                            controls
-                        >
-
-                            <source
-                                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                            >
-
-                            Your browser does not support audio.
-
-                        </audio>
-
-                    </div>
-
-
-                {% elif message.message_type == "file" %}
-
-                    <a
-                        href="{{ url_for('uploaded_file', filename=message.file_path) }}"
-                        class="file-card"
-                        target="_blank"
-                    >
-
-                        <span class="file-icon">
-                            📄
-                        </span>
-
-                        <span class="file-info">
-
-                            <span class="file-name">
-                                {{ message.file_name }}
-                            </span>
-
-                            <span class="file-label">
-                                Open file
-                            </span>
-
-                        </span>
-
-                    </a>
-
-
-                {% else %}
-
-                    <p>
-                        {{ message.body }}
-                    </p>
-
-                {% endif %}
-
-
-                <small>
-
-                    {{ message.created_at.strftime('%I:%M %p') }}
-
-                </small>
-
-
-            </div>
-
-
-        {% endif %}
-
+        <img
+            src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+            class="attachment-image"
+            alt="{{ message.file_name }}"
+        >
 
     </div>
+
+
+{% elif message.message_type == "video" %}
+
+
+    <div class="attachment-message">
+
+        <video
+            class="attachment-video"
+            controls
+        >
+
+            <source
+                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+            >
+
+            Your browser does not support video.
+
+        </video>
+
+    </div>
+
+
+{% elif message.message_type == "audio" %}
+
+
+    <div class="attachment-message">
+
+        <audio
+            class="attachment-audio"
+            controls
+        >
+
+            <source
+                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+            >
+
+            Your browser does not support audio.
+
+        </audio>
+
+    </div>
+
+
+{% elif message.message_type == "file" %}
+
+
+    <a
+        href="{{ url_for('uploaded_file', filename=message.file_path) }}"
+        class="file-card"
+        target="_blank"
+    >
+
+        <span class="file-icon">
+            📄
+        </span>
+
+
+        <span class="file-info">
+
+            <span class="file-name">
+                {{ message.file_name }}
+            </span>
+
+            <span class="file-label">
+                Open file
+            </span>
+
+        </span>
+
+    </a>
+
+
+{% else %}
+
+
+    <p>
+        {{ message.body }}
+    </p>
+
+
+{% endif %}
+
+
+<small>
+
+    {{ message.created_at.strftime('%I:%M %p') }}
+
+
+    <span class="read-status">
+
+        {% if message.is_read %}
+            ✓✓
+        {% else %}
+            ✓
+        {% endif %}
+
+    </span>
+
+</small>
+
+
+<button
+    type="button"
+    class="delete-message-btn"
+    data-message-id="{{ message.id }}"
+    title="Delete message"
+>
+    🗑️
+</button>
+
+
+</div>
+
+
+{% else %}
+
+
+<!-- =================================================
+     OTHER MESSAGE
+================================================= -->
+
+<div
+    class="message other-message"
+    data-message-id="{{ message.id }}"
+>
+
+
+{% if message.message_type == "image" %}
+
+
+    <div class="attachment-message">
+
+        <img
+            src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+            class="attachment-image"
+            alt="{{ message.file_name }}"
+        >
+
+    </div>
+
+
+{% elif message.message_type == "video" %}
+
+
+    <div class="attachment-message">
+
+        <video
+            class="attachment-video"
+            controls
+        >
+
+            <source
+                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+            >
+
+            Your browser does not support video.
+
+        </video>
+
+    </div>
+
+
+{% elif message.message_type == "audio" %}
+
+
+    <div class="attachment-message">
+
+        <audio
+            class="attachment-audio"
+            controls
+        >
+
+            <source
+                src="{{ url_for('uploaded_file', filename=message.file_path) }}"
+            >
+
+            Your browser does not support audio.
+
+        </audio>
+
+    </div>
+
+
+{% elif message.message_type == "file" %}
+
+
+    <a
+        href="{{ url_for('uploaded_file', filename=message.file_path) }}"
+        class="file-card"
+        target="_blank"
+    >
+
+        <span class="file-icon">
+            📄
+        </span>
+
+
+        <span class="file-info">
+
+            <span class="file-name">
+                {{ message.file_name }}
+            </span>
+
+            <span class="file-label">
+                Open file
+            </span>
+
+        </span>
+
+    </a>
+
+
+{% else %}
+
+
+    <p>
+        {{ message.body }}
+    </p>
+
+
+{% endif %}
+
+
+<small>
+    {{ message.created_at.strftime('%I:%M %p') }}
+</small>
+
+<button
+    type="button"
+    class="delete-message-btn"
+    data-message-id="{{ message.id }}"
+    title="Delete message"
+>
+    🗑️
+</button>
+
+</div>
+
+
+{% endif %}
+
+
+</div>
+
 
 {% endfor %}
 
 
 </div>
 
-<!-- =================================
-     Scroll Button
-================================= -->
+
+<!-- =====================================================
+     SCROLL BUTTON
+===================================================== -->
 
 <div class="scroll-button-area">
 
-
-<button
-    type="button"
-    id="scrollToBottom"
-    title="Go to latest message"
->
-    ↓
-</button>
-
+    <button
+        type="button"
+        id="scrollToBottom"
+        title="Go to latest message"
+    >
+        ↓
+    </button>
 
 </div>
 
-<!-- =================================
-     Selected File
-================================= -->
 
-<div id="selectedFile"
-     class="selected-file">
+<!-- =====================================================
+     SELECTED FILE
+===================================================== -->
 
-
-<span id="selectedFileName"></span>
-
-<button
-    type="button"
-    class="remove-file"
-    id="removeFile"
+<div
+    id="selectedFile"
+    class="selected-file"
 >
-    ✕
-</button>
 
+    <span id="selectedFileName"></span>
+
+
+    <button
+        type="button"
+        class="remove-file"
+        id="removeFile"
+    >
+        ✕
+    </button>
 
 </div>
 
-<!-- =================================
-     Upload Status
-================================= -->
 
-<div id="uploadStatus"
-     class="upload-status">
+<!-- =====================================================
+     UPLOAD STATUS
+===================================================== -->
 
-
-Uploading...
-
-
+<div
+    id="uploadStatus"
+    class="upload-status"
+>
+    Uploading...
 </div>
 
-<!-- =================================
-     Message Form
-================================= -->
 
-<form id="messageForm"
-      class="message-form">
+<!-- =====================================================
+     MESSAGE FORM
+===================================================== -->
 
-
-<!-- Attachment -->
-
-<label
-    for="fileInput"
-    class="attachment-label"
-    title="Attach file"
->
-    📎
-</label>
-
-
-<input
-    type="file"
-    id="fileInput"
-    accept="
-        image/*,
-        video/*,
-        audio/*,
-        .pdf,
-        .doc,
-        .docx,
-        .txt,
-        .ppt,
-        .pptx,
-        .xls,
-        .xlsx,
-        .csv
-    "
+<form
+    id="messageForm"
+    class="message-form"
 >
 
 
-<!-- Message Input -->
+    <label
+        for="fileInput"
+        class="attachment-label"
+        title="Attach file"
+    >
+        📎
+    </label>
 
-<input
-    type="text"
-    id="messageInput"
-    placeholder="Type a message..."
-    autocomplete="off"
->
+
+    <input
+        type="file"
+        id="fileInput"
+        accept="
+            image/*,
+            video/*,
+            audio/*,
+            .pdf,
+            .doc,
+            .docx,
+            .txt,
+            .ppt,
+            .pptx,
+            .xls,
+            .xlsx,
+            .csv
+        "
+    >
 
 
-<!-- Send -->
+    <input
+        type="text"
+        id="messageInput"
+        placeholder="Type a message..."
+        autocomplete="off"
+    >
 
-<button type="submit">
-    Send
-</button>
+
+    <button type="submit">
+        Send
+    </button>
 
 
 </form>
 
+
 </div>
 
-<!-- =================================
-     Delete Confirmation Popup
-================================= -->
 
-<div id="deleteConfirmOverlay"
-     class="delete-confirm-overlay">
+<!-- =====================================================
+     DELETE CONFIRMATION
+===================================================== -->
+
+<div
+    id="deleteConfirmOverlay"
+    class="delete-confirm-overlay"
+>
 
 
-<div class="delete-confirm-box">
+    <div class="delete-confirm-box">
 
-    <h3>
-        Delete message?
-    </h3>
 
-    <p>
-        Are you sure you want to delete this message?
-    </p>
+        <h3>
+            Delete message?
+        </h3>
 
-    <div class="delete-actions">
 
-        <button
-            type="button"
-            class="delete-cancel"
-            id="deleteCancel"
-        >
-            Cancel
-        </button>
+        <p>
+            Are you sure you want to delete this message?
+        </p>
 
-        <button
-            type="button"
-            class="delete-confirm"
-            id="deleteConfirm"
-        >
-            Delete
-        </button>
+
+        <div class="delete-actions">
+
+
+            <button
+                type="button"
+                class="delete-cancel"
+                id="deleteCancel"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="delete-confirm"
+                id="deleteConfirm"
+            >
+                Delete
+            </button>
+
+
+        </div>
+
 
     </div>
 
-</div>
 
 </div>
 
-<!-- =================================
-     Local Socket.IO
-================================= -->
+
+<!-- =====================================================
+     LOCAL SOCKET.IO
+===================================================== -->
 
 <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+
 
 <script>
 
 
-// =================================
-// Socket Connection
-// =================================
+// =====================================================
+// SOCKET
+// =====================================================
 
 const socket = io();
 
 
-// =================================
-// IDs
-// =================================
+// =====================================================
+// IDS
+// =====================================================
 
 const conversationId =
     Number("{{ conversation.id }}");
 
+
 const currentUserId =
     Number("{{ current_user.id }}");
+
 
 const otherUserId =
     Number("{{ other_user.id }}");
 
 
-// =================================
-// HTML Elements
-// =================================
+// =====================================================
+// ELEMENTS
+// =====================================================
 
 const messagesContainer =
     document.getElementById("messages");
 
+
 const messageForm =
     document.getElementById("messageForm");
+
 
 const messageInput =
     document.getElementById("messageInput");
 
+
 const userStatus =
     document.getElementById("userStatus");
+
 
 const typingStatus =
     document.getElementById("typingStatus");
 
+
 const fileInput =
     document.getElementById("fileInput");
+
 
 const selectedFile =
     document.getElementById("selectedFile");
 
+
 const selectedFileName =
     document.getElementById("selectedFileName");
+
 
 const removeFile =
     document.getElementById("removeFile");
 
+
 const uploadStatus =
     document.getElementById("uploadStatus");
+
 
 const scrollToBottomButton =
     document.getElementById("scrollToBottom");
 
 
-// =================================
-// Delete Elements
-// =================================
-
 const deleteConfirmOverlay =
-    document.getElementById("deleteConfirmOverlay");
+    document.getElementById(
+        "deleteConfirmOverlay"
+    );
+
 
 const deleteCancel =
-    document.getElementById("deleteCancel");
+    document.getElementById(
+        "deleteCancel"
+    );
+
 
 const deleteConfirm =
-    document.getElementById("deleteConfirm");
+    document.getElementById(
+        "deleteConfirm"
+    );
+
 
 let messageToDelete = null;
 
 
-// =================================
-// Typing Timer
-// =================================
-
 let typingTimer;
 
 
-// =================================
-// Join Conversation
-// =================================
+// =====================================================
+// JOIN CONVERSATION
+// =====================================================
 
-socket.emit("join", {
-
-    conversation_id:
-        conversationId
-
-});
-
-
-// =================================
-// Join Personal Notification Room
-// =================================
-
-socket.emit("join_user_room");
+socket.emit(
+    "join",
+    {
+        conversation_id:
+            conversationId
+    }
+);
 
 
-// =================================
-// Mark Messages As Read
-// =================================
+// =====================================================
+// PERSONAL ROOM
+// =====================================================
+
+socket.emit(
+    "join_user_room"
+);
+
+
+// =====================================================
+// MARK READ
+// =====================================================
 
 function markMessagesAsRead() {
 
-    socket.emit("mark_as_read", {
-
-        conversation_id:
-            conversationId
-
-    });
+    socket.emit(
+        "mark_as_read",
+        {
+            conversation_id:
+                conversationId
+        }
+    );
 
 }
 
-markMessagesAsRead();
+
+socket.on(
+    "connect",
+    function() {
+
+        socket.emit(
+            "join",
+            {
+                conversation_id:
+                    conversationId
+            }
+        );
 
 
-// =================================
-// File Selected
-// =================================
+        socket.emit(
+            "join_user_room"
+        );
+
+
+        markMessagesAsRead();
+
+    }
+);
+
+
+// =====================================================
+// FILE SELECT
+// =====================================================
 
 fileInput.addEventListener(
     "change",
@@ -1082,26 +2120,33 @@ fileInput.addEventListener(
         const file =
             fileInput.files[0];
 
+
         if (!file) {
 
-            selectedFile.classList.remove("show");
+            selectedFile.classList.remove(
+                "show"
+            );
 
             return;
 
         }
 
+
         selectedFileName.textContent =
             "📎 " + file.name;
 
-        selectedFile.classList.add("show");
+
+        selectedFile.classList.add(
+            "show"
+        );
 
     }
 );
 
 
-// =================================
-// Remove Selected File
-// =================================
+// =====================================================
+// REMOVE FILE
+// =====================================================
 
 removeFile.addEventListener(
     "click",
@@ -1109,15 +2154,17 @@ removeFile.addEventListener(
 
         fileInput.value = "";
 
-        selectedFile.classList.remove("show");
+        selectedFile.classList.remove(
+            "show"
+        );
 
     }
 );
 
 
-// =================================
-// Online / Offline Status
-// =================================
+// =====================================================
+// ONLINE / OFFLINE
+// =====================================================
 
 socket.on(
     "user_status",
@@ -1149,9 +2196,9 @@ socket.on(
 );
 
 
-// =================================
-// Typing Detection
-// =================================
+// =====================================================
+// TYPING
+// =====================================================
 
 messageInput.addEventListener(
     "input",
@@ -1165,32 +2212,35 @@ messageInput.addEventListener(
             }
         );
 
+
         clearTimeout(
             typingTimer
         );
 
-        typingTimer = setTimeout(
-            function() {
 
-                socket.emit(
-                    "stop_typing",
-                    {
-                        conversation_id:
-                            conversationId
-                    }
-                );
+        typingTimer =
+            setTimeout(
+                function() {
 
-            },
-            1000
-        );
+                    socket.emit(
+                        "stop_typing",
+                        {
+                            conversation_id:
+                                conversationId
+                        }
+                    );
+
+                },
+                1000
+            );
 
     }
 );
 
 
-// =================================
-// Someone Is Typing
-// =================================
+// =====================================================
+// USER TYPING
+// =====================================================
 
 socket.on(
     "user_typing",
@@ -1210,9 +2260,9 @@ socket.on(
 );
 
 
-// =================================
-// Someone Stopped Typing
-// =================================
+// =====================================================
+// STOP TYPING
+// =====================================================
 
 socket.on(
     "user_stopped_typing",
@@ -1232,9 +2282,9 @@ socket.on(
 );
 
 
-// =================================
-// Send Message
-// =================================
+// =====================================================
+// SEND MESSAGE
+// =====================================================
 
 messageForm.addEventListener(
     "submit",
@@ -1242,40 +2292,49 @@ messageForm.addEventListener(
 
         event.preventDefault();
 
+
         const message =
             messageInput.value.trim();
 
 
-        // =================================
-        // File Upload
-        // =================================
+        // =================================================
+        // FILE
+        // =================================================
 
-        if (fileInput.files.length > 0) {
+        if (
+            fileInput.files.length > 0
+        ) {
 
             const file =
                 fileInput.files[0];
 
+
             const formData =
                 new FormData();
+
 
             formData.append(
                 "file",
                 file
             );
 
+
             formData.append(
                 "conversation_id",
                 conversationId
             );
+
 
             uploadStatus.textContent =
                 "Uploading " +
                 file.name +
                 "...";
 
+
             uploadStatus.classList.add(
                 "show"
             );
+
 
             try {
 
@@ -1288,8 +2347,10 @@ messageForm.addEventListener(
                         }
                     );
 
+
                 const result =
                     await response.json();
+
 
                 if (!response.ok) {
 
@@ -1298,22 +2359,28 @@ messageForm.addEventListener(
                         "File upload failed."
                     );
 
+
                     uploadStatus.classList.remove(
                         "show"
                     );
+
 
                     return;
 
                 }
 
+
                 fileInput.value = "";
+
 
                 selectedFile.classList.remove(
                     "show"
                 );
 
+
                 uploadStatus.textContent =
                     "File sent successfully!";
+
 
                 setTimeout(
                     function() {
@@ -1326,13 +2393,20 @@ messageForm.addEventListener(
                     1500
                 );
 
-            } catch (error) {
 
-                console.error(error);
+            }
+
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
 
                 uploadStatus.classList.remove(
                     "show"
                 );
+
 
                 alert(
                     "Something went wrong while uploading."
@@ -1340,20 +2414,22 @@ messageForm.addEventListener(
 
             }
 
+
             return;
 
         }
 
 
-        // =================================
-        // Normal Text
-        // =================================
+        // =================================================
+        // TEXT
+        // =================================================
 
         if (!message) {
 
             return;
 
         }
+
 
         socket.emit(
             "send_message",
@@ -1368,21 +2444,23 @@ messageForm.addEventListener(
             }
         );
 
+
         messageInput.value = "";
 
+
         messageInput.focus();
+
 
         clearTimeout(
             typingTimer
         );
 
+
         socket.emit(
             "stop_typing",
             {
-
                 conversation_id:
                     conversationId
-
             }
         );
 
@@ -1390,16 +2468,20 @@ messageForm.addEventListener(
 );
 
 
-// =================================
-// Receive Message
-// =================================
+// =====================================================
+// RECEIVE MESSAGE
+// =====================================================
 
 socket.on(
     "receive_message",
     function(data) {
 
+
         const wrapper =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         wrapper.classList.add(
             "message-wrapper"
@@ -1407,19 +2489,23 @@ socket.on(
 
 
         const messageDiv =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         messageDiv.classList.add(
             "message"
         );
 
+
         messageDiv.dataset.messageId =
             data.message_id;
 
 
-        // =================================
-        // Sender
-        // =================================
+        // =================================================
+        // SENDER
+        // =================================================
 
         if (
             data.sender_id ===
@@ -1430,15 +2516,19 @@ socket.on(
                 "my-message"
             );
 
+
             wrapper.classList.add(
                 "my-wrapper"
             );
 
-        } else {
+        }
+
+        else {
 
             messageDiv.classList.add(
                 "other-message"
             );
+
 
             wrapper.classList.add(
                 "other-wrapper"
@@ -1447,9 +2537,9 @@ socket.on(
         }
 
 
-        // =================================
-        // Text
-        // =================================
+        // =================================================
+        // TEXT
+        // =================================================
 
         if (
             data.message_type ===
@@ -1457,10 +2547,14 @@ socket.on(
         ) {
 
             const paragraph =
-                document.createElement("p");
+                document.createElement(
+                    "p"
+                );
+
 
             paragraph.textContent =
                 data.message;
+
 
             messageDiv.appendChild(
                 paragraph
@@ -1469,9 +2563,9 @@ socket.on(
         }
 
 
-        // =================================
-        // Image
-        // =================================
+        // =================================================
+        // IMAGE
+        // =================================================
 
         else if (
             data.message_type ===
@@ -1479,17 +2573,23 @@ socket.on(
         ) {
 
             const image =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
+
 
             image.src =
                 data.file_url;
 
+
             image.alt =
                 data.file_name;
+
 
             image.classList.add(
                 "attachment-image"
             );
+
 
             messageDiv.appendChild(
                 image
@@ -1498,9 +2598,9 @@ socket.on(
         }
 
 
-        // =================================
-        // Video
-        // =================================
+        // =================================================
+        // VIDEO
+        // =================================================
 
         else if (
             data.message_type ===
@@ -1508,17 +2608,23 @@ socket.on(
         ) {
 
             const video =
-                document.createElement("video");
+                document.createElement(
+                    "video"
+                );
+
 
             video.src =
                 data.file_url;
 
+
             video.controls =
                 true;
+
 
             video.classList.add(
                 "attachment-video"
             );
+
 
             messageDiv.appendChild(
                 video
@@ -1527,9 +2633,9 @@ socket.on(
         }
 
 
-        // =================================
-        // Audio
-        // =================================
+        // =================================================
+        // AUDIO
+        // =================================================
 
         else if (
             data.message_type ===
@@ -1537,17 +2643,23 @@ socket.on(
         ) {
 
             const audio =
-                document.createElement("audio");
+                document.createElement(
+                    "audio"
+                );
+
 
             audio.src =
                 data.file_url;
 
+
             audio.controls =
                 true;
+
 
             audio.classList.add(
                 "attachment-audio"
             );
+
 
             messageDiv.appendChild(
                 audio
@@ -1556,9 +2668,9 @@ socket.on(
         }
 
 
-        // =================================
-        // File
-        // =================================
+        // =================================================
+        // FILE
+        // =================================================
 
         else if (
             data.message_type ===
@@ -1566,13 +2678,18 @@ socket.on(
         ) {
 
             const link =
-                document.createElement("a");
+                document.createElement(
+                    "a"
+                );
+
 
             link.href =
                 data.file_url;
 
+
             link.target =
                 "_blank";
+
 
             link.classList.add(
                 "file-card"
@@ -1580,18 +2697,25 @@ socket.on(
 
 
             const icon =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
+
 
             icon.classList.add(
                 "file-icon"
             );
+
 
             icon.textContent =
                 "📄";
 
 
             const info =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
+
 
             info.classList.add(
                 "file-info"
@@ -1599,54 +2723,79 @@ socket.on(
 
 
             const name =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
+
 
             name.classList.add(
                 "file-name"
             );
+
 
             name.textContent =
                 data.file_name;
 
 
             const label =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
+
 
             label.classList.add(
                 "file-label"
             );
 
+
             label.textContent =
                 "Open file";
 
 
-            info.appendChild(name);
+            info.appendChild(
+                name
+            );
 
-            info.appendChild(label);
 
-            link.appendChild(icon);
+            info.appendChild(
+                label
+            );
 
-            link.appendChild(info);
 
-            messageDiv.appendChild(link);
+            link.appendChild(
+                icon
+            );
+
+
+            link.appendChild(
+                info
+            );
+
+
+            messageDiv.appendChild(
+                link
+            );
 
         }
 
 
-        // =================================
-        // Time
-        // =================================
+        // =================================================
+        // TIME
+        // =================================================
 
         const small =
-            document.createElement("small");
+            document.createElement(
+                "small"
+            );
+
 
         small.textContent =
             data.time;
 
 
-        // =================================
-        // Read Status
-        // =================================
+        // =================================================
+        // READ STATUS
+        // =================================================
 
         if (
             data.sender_id ===
@@ -1654,14 +2803,19 @@ socket.on(
         ) {
 
             const readStatus =
-                document.createElement("span");
+                document.createElement(
+                    "span"
+                );
+
 
             readStatus.classList.add(
                 "read-status"
             );
 
+
             readStatus.textContent =
-                " ✓";
+                "✓";
+
 
             small.appendChild(
                 readStatus
@@ -1669,70 +2823,70 @@ socket.on(
 
         }
 
+
         messageDiv.appendChild(
             small
         );
 
 
-        // =================================
-        // Add Delete Button INSIDE Bubble
-        // =================================
+        // =================================================
+        // DELETE
+        // =================================================
 
-        if (
-            data.sender_id ===
-            currentUserId
-        ) {
+        // =================================================
+// DELETE
+// =================================================
 
-            const deleteButton =
-                document.createElement("button");
-
-            deleteButton.type =
-                "button";
-
-            deleteButton.classList.add(
-                "delete-message-btn"
+        const deleteButton =
+            document.createElement(
+                "button"
             );
 
-            deleteButton.dataset.messageId =
-                data.message_id;
+        deleteButton.type =
+            "button";
 
-            deleteButton.title =
-                "Delete message";
+        deleteButton.classList.add(
+            "delete-message-btn"
+        );
 
-            deleteButton.textContent =
-                "🗑️";
+        deleteButton.dataset.messageId =
+            data.message_id;
 
-            messageDiv.appendChild(
-                deleteButton
-            );
+        deleteButton.title =
+            "Delete message";
 
-        }
+        deleteButton.textContent =
+            "🗑️";
 
+        messageDiv.appendChild(
+            deleteButton
+        );
 
-        // =================================
-        // Add Message
-        // =================================
+        // =================================================
+        // APPEND
+        // =================================================
 
         wrapper.appendChild(
             messageDiv
         );
+
 
         messagesContainer.appendChild(
             wrapper
         );
 
 
-        // =================================
-        // Scroll To Latest
-        // =================================
+        // =================================================
+        // SCROLL
+        // =================================================
 
         messagesContainer.scrollTop =
             messagesContainer.scrollHeight;
 
 
-        // =================================
-        // Incoming Read
-        // =================================
+        // =================================================
+        // INCOMING
+        // =================================================
 
         if (
             data.sender_id ===
@@ -1740,6 +2894,7 @@ socket.on(
         ) {
 
             markMessagesAsRead();
+
 
             typingStatus.textContent =
                 "";
@@ -1750,9 +2905,9 @@ socket.on(
 );
 
 
-// =================================
-// Messages Read
-// =================================
+// =====================================================
+// MESSAGES READ
+// =====================================================
 
 socket.on(
     "messages_read",
@@ -1763,6 +2918,7 @@ socket.on(
                 ".my-message"
             );
 
+
         myMessages.forEach(
             function(messageElement) {
 
@@ -1770,6 +2926,7 @@ socket.on(
                     messageElement.querySelector(
                         ".read-status"
                     );
+
 
                 if (readStatus) {
 
@@ -1785,9 +2942,9 @@ socket.on(
 );
 
 
-// =================================
-// Scroll To Bottom
-// =================================
+// =====================================================
+// SCROLL TO BOTTOM
+// =====================================================
 
 function scrollToBottom() {
 
@@ -1804,10 +2961,6 @@ function scrollToBottom() {
 }
 
 
-// =================================
-// Scroll Button Click
-// =================================
-
 scrollToBottomButton.addEventListener(
     "click",
     function() {
@@ -1818,9 +2971,9 @@ scrollToBottomButton.addEventListener(
 );
 
 
-// =================================
-// Show / Hide Scroll Button
-// =================================
+// =====================================================
+// SHOW / HIDE SCROLL BUTTON
+// =====================================================
 
 messagesContainer.addEventListener(
     "scroll",
@@ -1842,7 +2995,9 @@ messagesContainer.addEventListener(
             scrollToBottomButton.style.display =
                 "flex";
 
-        } else {
+        }
+
+        else {
 
             scrollToBottomButton.style.display =
                 "none";
@@ -1853,9 +3008,9 @@ messagesContainer.addEventListener(
 );
 
 
-// =================================
-// Delete Button Click
-// =================================
+// =====================================================
+// DELETE BUTTON
+// =====================================================
 
 document.addEventListener(
     "click",
@@ -1887,9 +3042,9 @@ document.addEventListener(
 );
 
 
-// =================================
-// Cancel Delete
-// =================================
+// =====================================================
+// CANCEL DELETE
+// =====================================================
 
 deleteCancel.addEventListener(
     "click",
@@ -1898,6 +3053,7 @@ deleteCancel.addEventListener(
         messageToDelete =
             null;
 
+
         deleteConfirmOverlay.style.display =
             "none";
 
@@ -1905,9 +3061,9 @@ deleteCancel.addEventListener(
 );
 
 
-// =================================
-// Confirm Delete
-// =================================
+// =====================================================
+// CONFIRM DELETE
+// =====================================================
 
 deleteConfirm.addEventListener(
     "click",
@@ -1937,6 +3093,7 @@ deleteConfirm.addEventListener(
         messageToDelete =
             null;
 
+
         deleteConfirmOverlay.style.display =
             "none";
 
@@ -1944,9 +3101,9 @@ deleteConfirm.addEventListener(
 );
 
 
-// =================================
-// Message Deleted
-// =================================
+// =====================================================
+// MESSAGE DELETED
+// =====================================================
 
 socket.on(
     "message_deleted",
@@ -1981,9 +3138,35 @@ socket.on(
 );
 
 
-// =================================
-// Initial Scroll
-// =================================
+// =====================================================
+// CLOSE POPUP ON BACKDROP
+// =====================================================
+
+deleteConfirmOverlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target ===
+            deleteConfirmOverlay
+        ) {
+
+            messageToDelete =
+                null;
+
+
+            deleteConfirmOverlay.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// INITIAL SCROLL
+// =====================================================
 
 messagesContainer.scrollTop =
     messagesContainer.scrollHeight;

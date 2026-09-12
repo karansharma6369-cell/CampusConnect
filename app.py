@@ -297,7 +297,25 @@ class Message(db.Model):
         nullable=True
     )
 
+class DeletedMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
 
+    message_id = db.Column(
+        db.Integer,
+        db.ForeignKey("message.id"),
+        nullable=False
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id"),
+        nullable=False
+    )
+
+    deleted_at = db.Column(
+        db.DateTime,
+        default=lambda: datetime.utcnow() + timedelta(hours=5, minutes=30)
+    )
 # =====================================================
 # NOTIFICATION MODEL
 # =====================================================
@@ -450,55 +468,32 @@ def home():
 # REGISTER
 # =====================================================
 
-@app.route(
-    "/register",
-    methods=["GET", "POST"]
-)
+@app.route("/register", methods=["GET", "POST"])
 def register():
 
     if request.method == "POST":
 
         name = request.form["name"]
-
         email = request.form["email"]
-
         password = request.form["password"]
 
-
-        if User.query.filter_by(
-            email=email
-        ).first():
-
-            return "Email already registered!"
-
+        password_hash = generate_password_hash(password)
 
         new_user = User(
-
             name=name,
-
             email=email,
-
-            password_hash=
-                generate_password_hash(
-                    password
-                )
-
+            password_hash=password_hash
         )
 
-
-        db.session.add(
-            new_user
-        )
-
+        db.session.add(new_user)
         db.session.commit()
 
+        # Automatically login the newly registered user
+        session["user_id"] = new_user.id
 
-        return "Registration successful! 🎉"
+        return redirect(url_for("dashboard"))
 
-
-    return render_template(
-        "register.html"
-    )
+    return render_template("register.html")
 
 
 # =====================================================
@@ -918,15 +913,22 @@ def chat(user_id):
     # LOAD MESSAGES
     # =================================================
 
-    messages = Message.query.filter_by(
+    # =================================================
+# LOAD MESSAGES
+# =================================================
 
-        conversation_id=
-            conversation.id
+    deleted_message_ids = [
+        deleted.message_id
+        for deleted in DeletedMessage.query.filter_by(
+            user_id=current_user_id
+        ).all()
+    ]
 
+    messages = Message.query.filter(
+        Message.conversation_id == conversation.id,
+        ~Message.id.in_(deleted_message_ids)
     ).order_by(
-
         Message.created_at.asc()
-
     ).all()
 
 
@@ -1859,199 +1861,64 @@ def handle_message(data):
 @socketio.on("delete_message")
 def handle_delete_message(data):
 
-    user_id = session.get(
-        "user_id"
-    )
-
-
-    # -------------------------------------------------
-    # LOGIN CHECK
-    # -------------------------------------------------
+    user_id = session.get("user_id")
 
     if not user_id:
-
         return
 
+    message_id = data.get("message_id")
+    conversation_id = data.get("conversation_id")
 
-    # -------------------------------------------------
-    # GET DATA
-    # -------------------------------------------------
-
-    message_id = data.get(
-        "message_id"
-    )
-
-    conversation_id = data.get(
-        "conversation_id"
-    )
-
-
-    if not message_id:
-
+    if not message_id or not conversation_id:
         return
 
-
-    if not conversation_id:
-
-        return
-
-
-    # -------------------------------------------------
-    # FIND MESSAGE
-    # -------------------------------------------------
-
-    message = Message.query.get(
-        message_id
-    )
-
+    # Find message
+    message = Message.query.get(message_id)
 
     if not message:
-
         return
 
-
-    # -------------------------------------------------
-    # VERIFY CONVERSATION
-    # -------------------------------------------------
-
+    # Check conversation
     if message.conversation_id != conversation_id:
-
         return
 
-
-    conversation = Conversation.query.get(
-        conversation_id
-    )
-
+    conversation = Conversation.query.get(conversation_id)
 
     if not conversation:
-
         return
 
-
-    # -------------------------------------------------
-    # CONVERSATION SECURITY
-    # -------------------------------------------------
-
+    # Check user belongs to conversation
     if user_id not in [
-
         conversation.user1_id,
-
         conversation.user2_id
-
     ]:
-
         return
 
+    # Check if already deleted for this user
+    already_deleted = DeletedMessage.query.filter_by(
+        message_id=message_id,
+        user_id=user_id
+    ).first()
 
-    # -------------------------------------------------
-    # ONLY SENDER CAN DELETE
-    # -------------------------------------------------
-
-    if message.sender_id != user_id:
-
-        emit(
-
-            "delete_error",
-
-            {
-
-                "message":
-                    "You can only delete your own messages."
-
-            }
-
-        )
-
+    if already_deleted:
         return
 
-
-    # -------------------------------------------------
-    # SAVE FILE PATH BEFORE DELETE
-    # -------------------------------------------------
-
-    file_path = message.file_path
-
-
-    # -------------------------------------------------
-    # DELETE MESSAGE FROM DATABASE
-    # -------------------------------------------------
-
-    db.session.delete(
-        message
+    # Create Delete-for-Me record
+    deleted_message = DeletedMessage(
+        message_id=message_id,
+        user_id=user_id
     )
 
+    db.session.add(deleted_message)
     db.session.commit()
 
-
-    # -------------------------------------------------
-    # DELETE ATTACHMENT FILE
-    # -------------------------------------------------
-
-    if file_path:
-
-        full_file_path = os.path.join(
-
-            app.config["UPLOAD_FOLDER"],
-
-            file_path
-
-        )
-
-
-        try:
-
-            if os.path.exists(
-                full_file_path
-            ):
-
-                os.remove(
-                    full_file_path
-                )
-
-                print(
-                    "🗑️ Attachment deleted:",
-                    file_path
-                )
-
-        except Exception as error:
-
-            print(
-                "⚠️ Could not delete attachment:",
-                error
-            )
-
-
-    # -------------------------------------------------
-    # REAL-TIME DELETE
-    # -------------------------------------------------
-
-    room = (
-        f"conversation_{conversation_id}"
-    )
-
-
-    socketio.emit(
-
+    # Remove ONLY from the current user's screen
+    emit(
         "message_deleted",
-
         {
-
-            "message_id":
-                message_id
-
-        },
-
-        to=room
-
+            "message_id": message_id
+        }
     )
-
-
-    print(
-        f"🗑️ Message {message_id} deleted by user {user_id}"
-    )
-
-
 # =====================================================
 # SOCKET.IO — TYPING
 # =====================================================
