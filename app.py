@@ -40,7 +40,10 @@ app = Flask(__name__)
 
 socketio = SocketIO(app)
 
-app.secret_key = "campusconnect-secret-key"
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "campusconnect-secret-key"
+)
 
 
 basedir = os.path.abspath(
