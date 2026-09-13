@@ -467,6 +467,9 @@ def home():
 # =====================================================
 # REGISTER
 # =====================================================
+# =====================================================
+# REGISTER
+# =====================================================
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -476,6 +479,18 @@ def register():
         name = request.form["name"]
         email = request.form["email"]
         password = request.form["password"]
+
+        # Check if email already exists
+        existing_user = User.query.filter_by(
+            email=email
+        ).first()
+
+        if existing_user:
+
+            return render_template(
+                "register.html",
+                error="Email already registered. Please use another email."
+            )
 
         password_hash = generate_password_hash(password)
 
@@ -491,9 +506,13 @@ def register():
         # Automatically login the newly registered user
         session["user_id"] = new_user.id
 
-        return redirect(url_for("dashboard"))
+        return redirect(
+            url_for("dashboard")
+        )
 
-    return render_template("register.html")
+    return render_template(
+        "register.html"
+    )
 
 
 # =====================================================
@@ -533,14 +552,15 @@ def login():
             )
 
 
-        return "Invalid email or password!"
+        return render_template(
+            "login.html",
+            error="Invalid email or password!"
+        )
 
 
     return render_template(
         "login.html"
     )
-
-
 # =====================================================
 # DASHBOARD
 # =====================================================
