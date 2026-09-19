@@ -15,11 +15,98 @@
           href="{{ url_for('static', filename='style.css') }}">
 
     <style>
-
+        
         * {
             box-sizing: border-box;
         }
+        /* CampusConnect Intro */
 
+#intro-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(79, 125, 243, 0.25),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(139, 156, 246, 0.22),
+            transparent 35%
+        ),
+        #f5f7fc;
+
+    animation: introExit 0.6s ease forwards;
+    animation-delay: 1.8s;
+}
+
+.intro-content {
+    text-align: center;
+    animation: introAppear 0.8s ease;
+}
+
+.intro-logo {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 24px;
+
+    background: linear-gradient(
+        135deg,
+        #4f7df3,
+        #8b9cf6
+    );
+
+    font-size: 40px;
+
+    box-shadow:
+        0 15px 35px rgba(79, 125, 243, 0.28);
+}
+
+.intro-title {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 800;
+    color: #1f2a44;
+}
+
+.intro-subtitle {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #7a8499;
+}
+
+@keyframes introAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes introExit {
+    to {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
         body {
             margin: 0;
             min-height: 100vh;
@@ -53,9 +140,24 @@
         }
 
         .login-container {
-            width: 100%;
-            max-width: 430px;
-        }
+    width: 100%;
+    max-width: 430px;
+
+    opacity: 0;
+    animation: loginAppear 0.7s ease forwards;
+    animation-delay: 1.9s;
+}
+@keyframes loginAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
         .login-card {
             background: rgba(255, 255, 255, 0.96);
@@ -334,7 +436,27 @@
 
 
 <body>
+<body>
 
+    <div id="intro-screen">
+
+        <div class="intro-content">
+
+            <div class="intro-logo">
+                🎓
+            </div>
+
+            <h1 class="intro-title">
+                CampusConnect
+            </h1>
+
+            <p class="intro-subtitle">
+                Connect. Communicate. Belong.
+            </p>
+
+        </div>
+
+    </div>
     <div class="login-container">
 
         <div class="login-card">
